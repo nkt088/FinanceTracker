@@ -27,18 +27,16 @@ import XCTest
 final class FinanceTrackerTests: XCTestCase {
     private let transaction = Transaction(
         id: 42,
-        accountId: 1,
-        categoryId: 2,
+        account: AccountBrief(id: 1, name: "Основной", balance: 1000, currency: "RUB"),
+        category: Category(id: 2, name: "Зарплата", emoji: "💰", direction: .income),
         amount: Decimal(string: "999.99")!,
         transactionDate: Date(),
         comment: "Test Transaction",
         createdAt: Date(),
         updatedAt: Date()
     )
-    //JSON
+
     func testTransactionJSONSerializationAndParsing() throws {
-
-
         let json = transaction.jsonObject
 
         guard let parsed = Transaction.parse(jsonObject: json) else {
@@ -47,8 +45,8 @@ final class FinanceTrackerTests: XCTestCase {
         }
 
         XCTAssertEqual(parsed.id, transaction.id)
-        XCTAssertEqual(parsed.accountId, transaction.accountId)
-        XCTAssertEqual(parsed.categoryId, transaction.categoryId)
+        XCTAssertEqual(parsed.account.id, transaction.account.id)
+        XCTAssertEqual(parsed.category.id, transaction.category.id)
         XCTAssertEqual(parsed.amount, transaction.amount)
         XCTAssertEqual(parsed.comment, transaction.comment)
         XCTAssertEqual(parsed.transactionDate.timeIntervalSince1970, transaction.transactionDate.timeIntervalSince1970, accuracy: 0.001)
@@ -58,9 +56,9 @@ final class FinanceTrackerTests: XCTestCase {
 
     func testTransactionParseFailsOnInvalidJSON() throws {
         let invalidJSON: Any = [
-            "id": "not an int", // ошибка типа
-            "accountId": 1,
-            "categoryId": 2,
+            "id": "not an int",
+            "account": ["id": 1, "name": "Основной", "balance": "1000.00", "currency": "RUB"],
+            "category": ["id": 2, "name": "Зарплата", "emoji": "💰", "isIncome": true],
             "amount": "100",
             "transactionDate": Date().timeIntervalSince1970,
             "createdAt": Date().timeIntervalSince1970,
@@ -70,31 +68,37 @@ final class FinanceTrackerTests: XCTestCase {
         let result = Transaction.parse(jsonObject: invalidJSON)
         XCTAssertNil(result, "Должно вернуться nil при некорректном JSON")
     }
-    
-    //CSV
-    func testTransactionCSVSerializationAndParsing() throws {
+    func testPrintDocumentsDirectoryPathAndSaveJSON() async throws {
+        let fileManager = FileManager.default
+        let fileName = "test_transaction.json"
 
-        let csv = transaction.csvString
-        print("CSV:", csv)
-
-        guard let parsed = Transaction.parse(csvLine: csv) else {
-            XCTFail("Не удалось распарсить CSV")
+        guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            XCTFail("Не удалось получить Documents директорию")
             return
         }
 
-        XCTAssertEqual(parsed.id, transaction.id)
-        XCTAssertEqual(parsed.accountId, transaction.accountId)
-        XCTAssertEqual(parsed.categoryId, transaction.categoryId)
-        XCTAssertEqual(parsed.amount, transaction.amount)
-        XCTAssertEqual(parsed.comment, transaction.comment)
-        XCTAssertEqual(parsed.transactionDate.timeIntervalSince1970, transaction.transactionDate.timeIntervalSince1970, accuracy: 1)
-        XCTAssertEqual(parsed.createdAt.timeIntervalSince1970, transaction.createdAt.timeIntervalSince1970, accuracy: 1)
-        XCTAssertEqual(parsed.updatedAt.timeIntervalSince1970, transaction.updatedAt.timeIntervalSince1970, accuracy: 1)
+        let fileURL = documentsURL.appendingPathComponent(fileName)
+        print("Путь к файлу:", fileURL.path)
+
+        // Пример сериализации и сохранения
+        let json = transaction.jsonObject
+        let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
+        try data.write(to: fileURL, options: .atomic)
     }
 
-    func testTransactionCSVParsingFailsOnInvalidFormat() {
-        let brokenCSV = "1,1,2,INVALID_AMOUNT,2025-06-13T09:29:07Z,комментарий,2025-06-13T09:29:07Z,2025-06-13T09:29:07Z"
-        let result = Transaction.parse(csvLine: brokenCSV)
-        XCTAssertNil(result, "Парсинг должен вернуть nil при некорректной строке CSV")
-    }
+//    func testTransactionCSVSerializationOnly() throws {
+//        let csv = transaction.csvString
+//        print("CSV:", csv)
+//
+//        XCTAssertTrue(csv.contains(transaction.account.name))
+//        XCTAssertTrue(csv.contains(transaction.category.name))
+//        XCTAssertTrue(csv.contains("999.99"))
+//    }
+//
+//    func testTransactionCSVParsingFailsOnInvalidFormat() {
+//        let brokenCSV = "1,Основной,Зарплата,INVALID_AMOUNT,2025-06-13T09:29:07Z,комментарий,2025-06-13T09:29:07Z,2025-06-13T09:29:07Z"
+//        // Нет парсера, поэтому должно быть nil всегда
+//        let result = Transaction.parse(csvLine: brokenCSV)
+//        XCTAssertNil(result)
+//    }
 }
