@@ -51,12 +51,8 @@ struct TransactionUpdateView: View {
                         .multilineTextAlignment(.trailing)
                         .frame(maxWidth: 120)
                 }
-                DatePicker("Дата", selection: $date, displayedComponents: .date)
-                    .environment(\.locale, Locale(identifier: "ru_RU"))
-
-                DatePicker("Время", selection: $date, displayedComponents: .hourAndMinute)
-                    .environment(\.locale, Locale(identifier: "ru_RU"))
-
+                CustomDatePicker(title: "Дата", date: $date, components: .date)
+                CustomDatePicker(title: "Время", date: $date, components: .hourAndMinute)
                 TextField("Комментарий", text: $comment, axis: .vertical)
             }
 

@@ -8,10 +8,10 @@
 import Foundation
 
 final class MockTransactionsService {
-    //// фрагмент чтобы обновлять изменения
+    // фрагмент чтобы обновлять изменения
     static let shared = MockTransactionsService()
     private init() {}
-    ////
+    //
     private var transactions: [Transaction] = [
         // Доходы
         Transaction(

@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 final class MockBankAccountsService {
     private var account = Account(
         id: 1,
@@ -21,7 +22,7 @@ final class MockBankAccountsService {
     func account() async throws -> Account {
         account
     }
-
+//можно добавить проверку что не все поля заполнены guard return nil Account ?
     func updateAccount(_ update: AccountUpdateRequest) async throws -> Account {
         account = Account(
             id: account.id,

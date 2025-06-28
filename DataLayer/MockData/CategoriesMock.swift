@@ -25,8 +25,14 @@ final class MockCategoriesService {
             Category(id: 12, name: "Иные доходы", emoji: "💸", direction: .income)
         ]
     }
-
+//фильтрация по direction
     func categories(for direction: Direction) async throws -> [Category] {
         try await categories().filter { $0.direction == direction }
     }
+    /*func categories(for direction: Direction) async throws -> [Category] {
+     let allCategories = try await categories() //получаем
+     let filteredCategories = allCategories.filter { category in // отбираем по направлению
+         return category.direction == direction }
+     return filteredCategories //вернем список }*/
+    
 }

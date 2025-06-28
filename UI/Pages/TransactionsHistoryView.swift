@@ -9,9 +9,7 @@ import SwiftUI
 
 struct TransactionsHistoryView: View {
     let direction: Direction
-    
     @Environment(\.dismiss) private var dismiss
-    
     @State private var startDate: Date = Calendar.current.date(byAdding: .month, value: -1, to: Date())!
     @State private var endDate: Date = Date()
     @State private var transactions: [Transaction] = []
@@ -20,7 +18,7 @@ struct TransactionsHistoryView: View {
     private let service = MockTransactionsService.shared
 
     var body: some View {
-        NavigationStack {
+        ScrollView {
             VStack(spacing: 16) {
                 HStack {
                     Text("Моя история")
@@ -28,32 +26,21 @@ struct TransactionsHistoryView: View {
                     Spacer()
                 }
 
-                HStack {
-                    Text("Начало")
-                    Spacer()
-                    DatePicker("", selection: $startDate, displayedComponents: .date)
-                        .labelsHidden()
-                        .environment(\.locale, Locale(identifier: "ru_RU"))
-                }
-
-                HStack {
-                    Text("Конец")
-                    Spacer()
-                    DatePicker("", selection: $endDate, displayedComponents: .date)
-                        .labelsHidden()
-                        .environment(\.locale, Locale(identifier: "ru_RU"))
-                }
-
-                HStack {
-                    Text("Сумма")
-                        .font(.headline)
-                    Spacer()
-                    Text(totalAmount.formatted(.currency(code: "RUB")))
-                        .font(.headline)
+                VStack(spacing: 12) {
+                    CustomDatePicker(title: "Начало", date: $startDate, components: .date)
+                    CustomDatePicker(title: "Конец", date: $endDate, components: .date)
+                    HStack {
+                        Text("Сумма")
+                        Spacer()
+                        Text(totalAmount.formatted(.currency(code: "RUB")
+                                                    .locale(Locale(identifier: "ru_RU"))
+                                                  ))
+                    }
                 }
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
+                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
 
                 Text("Операции")
                     .font(.subheadline)
@@ -64,34 +51,44 @@ struct TransactionsHistoryView: View {
                     ProgressView()
                         .frame(maxHeight: .infinity)
                 } else {
-                    ScrollView {
-                        LazyVStack(spacing: 0) {
-                            ForEach(transactions) { tx in
-                                TransactionRowView(transaction: tx)
-                                Divider().padding(.leading)
-                            }
+                    LazyVStack(spacing: 0) {
+                        ForEach(transactions) { tx in
+                            TransactionRowView(transaction: tx)
+                            Divider().padding(.leading)
+                        }
+                    }
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 16)
+                }
+            }
+            .padding([.top, .horizontal])
+        }
+        .background(Color(.systemGroupedBackground))
+        .scrollContentBackground(.hidden)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Image(systemName: "chevron.left")
+                            Text("Назад")
                         }
                     }
                 }
-            }
-            .padding()
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Назад") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        // заглушка
-                    } label: {
-                        Image(systemName: "doc")
-                    }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    // заглушка
+                } label: {
+                    Image(systemName: "doc")
                 }
             }
+            
         }
-        //Задание со *
         .onChange(of: startDate) {
             if startDate > endDate {
                 endDate = startDate
