@@ -4,7 +4,7 @@
 //
 //  Created by MakhovN @nktmahov
 //
-
+/*
 import Foundation
 //Transaction+CSV
 extension Transaction {
@@ -75,3 +75,4 @@ private extension String {
             .replacingOccurrences(of: "\"\"", with: "\"")
     }
 }
+*/

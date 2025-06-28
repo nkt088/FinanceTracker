@@ -6,68 +6,39 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		4AEBFE032DFC15C00047BE02 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4AEBFDEB2DFC15BD0047BE02 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4AEBFDF22DFC15BD0047BE02;
-			remoteInfo = FinanceTracker;
-		};
-		4AEBFE0D2DFC15C00047BE02 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4AEBFDEB2DFC15BD0047BE02 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4AEBFDF22DFC15BD0047BE02;
-			remoteInfo = FinanceTracker;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		4AEBFDF32DFC15BD0047BE02 /* FinanceTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		4AEBFE022DFC15C00047BE02 /* FinanceTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4AEBFE0C2DFC15C00047BE02 /* FinanceTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A711EE32E05A337002C49C7 /* FinanceTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4A711E9E2E0570A3002C49C7 /* Exceptions for "Tests" folder in "FinanceTracker" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				FinanceTrackerTests/FinanceTrackerTests.swift,
+				FinanceTrackerUITests/FinanceTrackerUITests.swift,
+				FinanceTrackerUITests/FinanceTrackerUITestsLaunchTests.swift,
+			);
+			target = 4AEBFDF22DFC15BD0047BE02 /* FinanceTracker */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		4AEBFDF52DFC15BD0047BE02 /* FinanceTracker */ = {
+		4A711E8A2E0570A0002C49C7 /* DataLayer */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FinanceTracker;
+			path = DataLayer;
 			sourceTree = "<group>";
 		};
-		4AEBFE052DFC15C00047BE02 /* FinanceTrackerTests */ = {
+		4A711E9A2E0570A3002C49C7 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FinanceTrackerTests;
+			exceptions = (
+				4A711E9E2E0570A3002C49C7 /* Exceptions for "Tests" folder in "FinanceTracker" target */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
-		4AEBFE0F2DFC15C00047BE02 /* FinanceTrackerUITests */ = {
+		4A711EA42E0570A5002C49C7 /* UI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FinanceTrackerUITests;
-			sourceTree = "<group>";
-		};
-		4AEBFE1F2DFC15CD0047BE02 /* Models */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Models;
-			sourceTree = "<group>";
-		};
-		4AEBFE202DFC15D30047BE02 /* Services */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Services;
-			sourceTree = "<group>";
-		};
-		4AEBFE212DFC15F90047BE02 /* Storage */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Storage;
-			sourceTree = "<group>";
-		};
-		4AEBFE222DFC16040047BE02 /* Extensions */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		4AEBFE362DFC1A870047BE02 /* MockData */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MockData;
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -80,46 +51,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4AEBFDFF2DFC15C00047BE02 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4AEBFE092DFC15C00047BE02 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		4AEBFDEA2DFC15BD0047BE02 = {
 			isa = PBXGroup;
 			children = (
-				4AEBFE362DFC1A870047BE02 /* MockData */,
-				4AEBFE222DFC16040047BE02 /* Extensions */,
-				4AEBFE212DFC15F90047BE02 /* Storage */,
-				4AEBFE202DFC15D30047BE02 /* Services */,
-				4AEBFE1F2DFC15CD0047BE02 /* Models */,
-				4AEBFDF52DFC15BD0047BE02 /* FinanceTracker */,
-				4AEBFE052DFC15C00047BE02 /* FinanceTrackerTests */,
-				4AEBFE0F2DFC15C00047BE02 /* FinanceTrackerUITests */,
-				4AEBFDF42DFC15BD0047BE02 /* Products */,
+				4A711E8A2E0570A0002C49C7 /* DataLayer */,
+				4A711E9A2E0570A3002C49C7 /* Tests */,
+				4A711EA42E0570A5002C49C7 /* UI */,
+				4A711EE32E05A337002C49C7 /* FinanceTracker.app */,
 			);
-			sourceTree = "<group>";
-		};
-		4AEBFDF42DFC15BD0047BE02 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				4AEBFDF32DFC15BD0047BE02 /* FinanceTracker.app */,
-				4AEBFE022DFC15C00047BE02 /* FinanceTrackerTests.xctest */,
-				4AEBFE0C2DFC15C00047BE02 /* FinanceTrackerUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,65 +80,16 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				4AEBFDF52DFC15BD0047BE02 /* FinanceTracker */,
-				4AEBFE1F2DFC15CD0047BE02 /* Models */,
-				4AEBFE202DFC15D30047BE02 /* Services */,
-				4AEBFE212DFC15F90047BE02 /* Storage */,
-				4AEBFE222DFC16040047BE02 /* Extensions */,
-				4AEBFE362DFC1A870047BE02 /* MockData */,
+				4A711E8A2E0570A0002C49C7 /* DataLayer */,
+				4A711E9A2E0570A3002C49C7 /* Tests */,
+				4A711EA42E0570A5002C49C7 /* UI */,
 			);
 			name = FinanceTracker;
 			packageProductDependencies = (
 			);
 			productName = FinanceTracker;
-			productReference = 4AEBFDF32DFC15BD0047BE02 /* FinanceTracker.app */;
+			productReference = 4A711EE32E05A337002C49C7 /* FinanceTracker.app */;
 			productType = "com.apple.product-type.application";
-		};
-		4AEBFE012DFC15C00047BE02 /* FinanceTrackerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4AEBFE192DFC15C00047BE02 /* Build configuration list for PBXNativeTarget "FinanceTrackerTests" */;
-			buildPhases = (
-				4AEBFDFE2DFC15C00047BE02 /* Sources */,
-				4AEBFDFF2DFC15C00047BE02 /* Frameworks */,
-				4AEBFE002DFC15C00047BE02 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				4AEBFE042DFC15C00047BE02 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				4AEBFE052DFC15C00047BE02 /* FinanceTrackerTests */,
-			);
-			name = FinanceTrackerTests;
-			packageProductDependencies = (
-			);
-			productName = FinanceTrackerTests;
-			productReference = 4AEBFE022DFC15C00047BE02 /* FinanceTrackerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		4AEBFE0B2DFC15C00047BE02 /* FinanceTrackerUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4AEBFE1C2DFC15C00047BE02 /* Build configuration list for PBXNativeTarget "FinanceTrackerUITests" */;
-			buildPhases = (
-				4AEBFE082DFC15C00047BE02 /* Sources */,
-				4AEBFE092DFC15C00047BE02 /* Frameworks */,
-				4AEBFE0A2DFC15C00047BE02 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				4AEBFE0E2DFC15C00047BE02 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				4AEBFE0F2DFC15C00047BE02 /* FinanceTrackerUITests */,
-			);
-			name = FinanceTrackerUITests;
-			packageProductDependencies = (
-			);
-			productName = FinanceTrackerUITests;
-			productReference = 4AEBFE0C2DFC15C00047BE02 /* FinanceTrackerUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -211,14 +104,6 @@
 					4AEBFDF22DFC15BD0047BE02 = {
 						CreatedOnToolsVersion = 16.3;
 					};
-					4AEBFE012DFC15C00047BE02 = {
-						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 4AEBFDF22DFC15BD0047BE02;
-					};
-					4AEBFE0B2DFC15C00047BE02 = {
-						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 4AEBFDF22DFC15BD0047BE02;
-					};
 				};
 			};
 			buildConfigurationList = 4AEBFDEE2DFC15BD0047BE02 /* Build configuration list for PBXProject "FinanceTracker" */;
@@ -231,33 +116,17 @@
 			mainGroup = 4AEBFDEA2DFC15BD0047BE02;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 4AEBFDF42DFC15BD0047BE02 /* Products */;
+			productRefGroup = 4AEBFDEA2DFC15BD0047BE02;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				4AEBFDF22DFC15BD0047BE02 /* FinanceTracker */,
-				4AEBFE012DFC15C00047BE02 /* FinanceTrackerTests */,
-				4AEBFE0B2DFC15C00047BE02 /* FinanceTrackerUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4AEBFDF12DFC15BD0047BE02 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4AEBFE002DFC15C00047BE02 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4AEBFE0A2DFC15C00047BE02 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -274,34 +143,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4AEBFDFE2DFC15C00047BE02 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4AEBFE082DFC15C00047BE02 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		4AEBFE042DFC15C00047BE02 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4AEBFDF22DFC15BD0047BE02 /* FinanceTracker */;
-			targetProxy = 4AEBFE032DFC15C00047BE02 /* PBXContainerItemProxy */;
-		};
-		4AEBFE0E2DFC15C00047BE02 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4AEBFDF22DFC15BD0047BE02 /* FinanceTracker */;
-			targetProxy = 4AEBFE0D2DFC15C00047BE02 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		4AEBFE142DFC15C00047BE02 /* Debug */ = {
@@ -485,90 +327,6 @@
 			};
 			name = Release;
 		};
-		4AEBFE1A2DFC15C00047BE02 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.FinanceTrackerTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinanceTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FinanceTracker";
-			};
-			name = Debug;
-		};
-		4AEBFE1B2DFC15C00047BE02 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.FinanceTrackerTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinanceTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FinanceTracker";
-			};
-			name = Release;
-		};
-		4AEBFE1D2DFC15C00047BE02 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.FinanceTrackerUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_TARGET_NAME = FinanceTracker;
-			};
-			name = Debug;
-		};
-		4AEBFE1E2DFC15C00047BE02 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.FinanceTrackerUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_TARGET_NAME = FinanceTracker;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -586,24 +344,6 @@
 			buildConfigurations = (
 				4AEBFE172DFC15C00047BE02 /* Debug */,
 				4AEBFE182DFC15C00047BE02 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4AEBFE192DFC15C00047BE02 /* Build configuration list for PBXNativeTarget "FinanceTrackerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4AEBFE1A2DFC15C00047BE02 /* Debug */,
-				4AEBFE1B2DFC15C00047BE02 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4AEBFE1C2DFC15C00047BE02 /* Build configuration list for PBXNativeTarget "FinanceTrackerUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4AEBFE1D2DFC15C00047BE02 /* Debug */,
-				4AEBFE1E2DFC15C00047BE02 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

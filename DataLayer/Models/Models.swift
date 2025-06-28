@@ -80,17 +80,17 @@ struct StatItem {
     let amount: Decimal
 }
 
-struct Category {
+struct Category : Identifiable {
     let id: Int
     let name: String
     let emoji: Character
     let direction: Direction
 }
 
-struct Transaction {
+struct Transaction : Identifiable{
     let id: Int
-    let accountId: Int
-    let categoryId: Int
+    let account: AccountBrief
+    let category: Category
     let amount: Decimal
     let transactionDate: Date
     let comment: String?
@@ -99,8 +99,8 @@ struct Transaction {
 }
 
 struct TransactionRequest {
-    let accountId: Int
-    let categoryId: Int
+    let account: AccountBrief
+    let category: Category
     let amount: Decimal
     let transactionDate: Date
     let comment: String?
@@ -116,3 +116,4 @@ struct TransactionResponse {
     let createdAt: Date
     let updatedAt: Date
 }
+

@@ -12,9 +12,9 @@ import Foundation
 final class TransactionsService {
     private var transactions: [Transaction] = []
 
-    func transactions(from startDate: Date, to endDate: Date, accountId: Int) async throws -> [Transaction] {
+    func transactions(from startDate: Date, to endDate: Date, account: AccountBrief) async throws -> [Transaction] {
         transactions.filter {
-            $0.accountId == accountId &&
+            $0.account.id == account.id &&
             $0.transactionDate >= startDate &&
             $0.transactionDate <= endDate
         }
@@ -23,8 +23,8 @@ final class TransactionsService {
     func create(_ request: TransactionRequest) async throws -> Transaction {
         let new = Transaction(
             id: (transactions.map { $0.id }.max() ?? 0) + 1,
-            accountId: request.accountId,
-            categoryId: request.categoryId,
+            account: request.account,
+            category: request.category,
             amount: request.amount,
             transactionDate: request.transactionDate,
             comment: request.comment,
