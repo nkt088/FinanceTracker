@@ -25,10 +25,6 @@ final class MockCategoriesService {
             Category(id: 12, name: "Иные доходы", emoji: "💸", direction: .income)
         ]
     }
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     func categories(for direction: Direction) async throws -> [Category] {
         try await categories().filter { $0.direction == direction }
     }

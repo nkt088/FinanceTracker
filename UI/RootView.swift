@@ -18,23 +18,32 @@ struct RootView: View {
 
     var body: some View {
         TabView {
-            TransactionsListView(direction: .outcome)
-                .tabItem {
-                    Image(systemName: "chart.line.downtrend.xyaxis")
-                    Text("Расходы")
-                }
+            NavigationStack {
+                TransactionsListView(direction: .outcome)
+            }
+            .tint(.purple)
+            .tabItem {
+                Image(systemName: "chart.line.downtrend.xyaxis")
+                Text("Расходы")
+            }
 
-            TransactionsListView(direction: .income)
-                .tabItem {
-                    Image(systemName: "chart.line.uptrend.xyaxis")
-                    Text("Доходы")
-                }
+            NavigationStack {
+                TransactionsListView(direction: .income)
+            }
+            .tint(.purple)
+            .tabItem {
+                Image(systemName: "chart.line.uptrend.xyaxis")
+                Text("Доходы")
+            }
 
-            PlaceholderView(title: "Счёт")
-                .tabItem {
-                    Image(systemName: "chart.bar.yaxis")
-                    Text("Счёт")
-                }
+            NavigationStack {
+                WalletView()
+            }
+            .tint(.purple)
+            .tabItem {
+                Image(systemName: "chart.bar.yaxis")
+                Text("Счёт")
+            }
 
             NavigationStack {
                 CategoryView()

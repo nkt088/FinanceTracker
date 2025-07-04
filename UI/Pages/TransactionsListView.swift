@@ -67,7 +67,6 @@ struct TransactionsListView: View {
                 } label: {
                     Image(systemName: "clock.arrow.circlepath")
                         .font(.title3)
-                        .foregroundColor(.accentColor)
                 }
             }
 
@@ -94,7 +93,9 @@ struct TransactionsListView: View {
                 Text("Всего")
                     .font(.headline)
                 Spacer()
-                Text(totalAmount.formatted(.currency(code: "RUB")))
+                Text(totalAmount.formatted(.currency(code: "RUB")
+                                                .locale(Locale(identifier: "ru_RU"))
+                                          ))
                     .font(.headline)
             }
             .padding()

@@ -11,10 +11,6 @@ struct TransactionRowView: View {
     let transaction: Transaction
 
     var body: some View {
-<<<<<<< Updated upstream
-        HStack {
-            Text("\(transaction.category.emoji) \(transaction.category.name)")
-=======
         HStack(spacing: 12) {
             ZStack {
                 Circle()
@@ -29,9 +25,12 @@ struct TransactionRowView: View {
             Text(transaction.category.name)
                 .font(.body)
 
->>>>>>> Stashed changes
             Spacer()
-            Text(transaction.amount.formatted(.currency(code: "RUB")))
+
+            Text(transaction.amount.formatted(
+                .currency(code: "RUB").locale(Locale(identifier: "ru_RU"))
+            ))
+            .font(.body)
         }
         .padding(.vertical, 12)
         .padding(.horizontal)
