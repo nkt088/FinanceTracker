@@ -58,6 +58,8 @@
 			isa = PBXGroup;
 			children = (
 				4A711E8A2E0570A0002C49C7 /* DataLayer */,
+				4A85453B2E0F66A0005BD576 /* DomainModels */,
+				4A8545362E0F6678005BD576 /* PlatformLayer */,
 				4A711E9A2E0570A3002C49C7 /* Tests */,
 				4A711EA42E0570A5002C49C7 /* UI */,
 				4A711EE32E05A337002C49C7 /* FinanceTracker.app */,
