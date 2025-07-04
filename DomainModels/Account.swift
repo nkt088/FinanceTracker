@@ -1,18 +1,11 @@
 //
-//  TransactionsService.swift
+//  Account.swift
 //  FinanceTracker
 //
 //  Created by MakhovN @nktmahov
 //
-
-// MARK: - Domain Models
-
+// MARK: - Account Models
 import Foundation
-
-enum Direction: String {
-    case income
-    case outcome
-}
 
 struct Account {
     let id: Int
@@ -72,48 +65,3 @@ struct AccountUpdateRequest {
     let balance: Decimal
     let currency: String
 }
-
-struct StatItem {
-    let categoryId: Int
-    let categoryName: String
-    let emoji: Character
-    let amount: Decimal
-}
-
-struct Category : Identifiable {
-    let id: Int
-    let name: String
-    let emoji: Character
-    let direction: Direction
-}
-
-struct Transaction : Identifiable{
-    let id: Int
-    let account: AccountBrief
-    let category: Category
-    let amount: Decimal
-    let transactionDate: Date
-    let comment: String?
-    let createdAt: Date
-    let updatedAt: Date
-}
-
-struct TransactionRequest {
-    let account: AccountBrief
-    let category: Category
-    let amount: Decimal
-    let transactionDate: Date
-    let comment: String?
-}
-
-struct TransactionResponse {
-    let id: Int
-    let account: AccountBrief
-    let category: Category
-    let amount: Decimal
-    let transactionDate: Date
-    let comment: String?
-    let createdAt: Date
-    let updatedAt: Date
-}
-

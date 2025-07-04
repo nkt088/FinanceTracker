@@ -15,7 +15,7 @@ struct AddTransactionButton: View {
             Image(systemName: "plus")
                 .font(.title)
                 .padding()
-                .background(Circle().fill(Color.accentColor))
+                .background(Circle().fill(Color.accent))
                 .foregroundColor(.white)
         }
         .padding()
