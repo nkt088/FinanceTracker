@@ -1,5 +1,5 @@
 //
-//  TransactionRowView.swift
+//  CategoryRowView.swift
 //  FinanceTracker
 //
 //  Created by MakhovN @nktmahov
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct TransactionRowView: View {
-    let transaction: Transaction
+struct CategoryRowView: View {
+    let category: Category
 
     var body: some View {
         HStack(spacing: 12) {
@@ -16,21 +16,16 @@ struct TransactionRowView: View {
                 Circle()
                     .fill(Color.accent.opacity(0.15))
                     .aspectRatio(1, contentMode: .fit)
-                Text(String(transaction.category.emoji))
+                Text(String(category.emoji))
                     .font(.system(size: 16))
                     .padding(6)
             }
             .frame(width: 32, height: 32)
 
-            Text(transaction.category.name)
+            Text(category.name)
                 .font(.body)
 
             Spacer()
-
-            Text(transaction.amount.formatted(
-                .currency(code: "RUB").locale(Locale(identifier: "ru_RU"))
-            ))
-            .font(.body)
         }
         .padding(.vertical, 12)
         .padding(.horizontal)

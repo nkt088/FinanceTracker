@@ -15,6 +15,7 @@ struct RootView: View {
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
     }
+
     var body: some View {
         TabView {
             NavigationStack {
@@ -44,11 +45,14 @@ struct RootView: View {
                 Text("Счёт")
             }
 
-            PlaceholderView(title: "Статьи")
-                .tabItem {
-                    Image(systemName: "list.bullet.rectangle")
-                    Text("Статьи")
-                }
+            NavigationStack {
+                CategoryView()
+            }
+            .tint(.purple)
+            .tabItem {
+                Image(systemName: "list.bullet.rectangle")
+                Text("Статьи")
+            }
 
             PlaceholderView(title: "Настройки")
                 .tabItem {

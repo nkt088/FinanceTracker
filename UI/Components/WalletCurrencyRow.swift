@@ -20,7 +20,7 @@ struct WalletCurrencyRow: View {
                 Text("Валюта")
                     .foregroundColor(.primary)
                 Spacer()
-                Text(symbol(for: currency))
+                Text(currency.currencySymbol)
                     .foregroundColor(.secondary)
                 if isEditing {
                     Image(systemName: "chevron.right")
@@ -29,18 +29,9 @@ struct WalletCurrencyRow: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(isEditing ? Color.white : Color.accent.opacity(0.2))
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .disabled(!isEditing)
-    }
-
-    private func symbol(for code: String) -> String {
-        switch code.uppercased() {
-        case "RUB": return "₽"
-        case "USD": return "$"
-        case "EUR": return "€"
-        default: return code
-        }
     }
 }
