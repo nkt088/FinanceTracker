@@ -36,6 +36,7 @@ struct WalletView: View {
                             WalletBalanceRow(
                                 isEditing: isEditing,
                                 balance: $balance,
+                                currency: currency,
                                 isFocused: $isBalanceFocused,
                                 spoilerHidden: $spoilerHidden
                             )

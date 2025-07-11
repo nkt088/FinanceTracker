@@ -32,14 +32,14 @@ struct SpoilerView: UIViewRepresentable {
 
         let emitterCell = CAEmitterCell()
         emitterCell.contents = UIImage(named: "Emitter")?.cgImage
-        emitterCell.color = UIColor.systemPurple.cgColor
-        emitterCell.contentsScale = 1.8
-        emitterCell.emissionRange = .pi * 2
-        emitterCell.lifetime = 1
-        emitterCell.scale = 0.5
+        emitterCell.color = UIColor.systemGray.cgColor
+        emitterCell.contentsScale = 2.6
+        emitterCell.emissionRange = .pi * 3
+        emitterCell.lifetime = 2
+        emitterCell.scale = 0.3
         emitterCell.velocityRange = 50
         emitterCell.alphaRange = 0.8
-        emitterCell.birthRate = 4000
+        emitterCell.birthRate = 2000
 
         emitterView.layer.emitterShape = .rectangle
         emitterView.layer.emitterCells = [emitterCell]
