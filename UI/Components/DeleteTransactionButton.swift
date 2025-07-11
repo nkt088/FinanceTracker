@@ -14,7 +14,7 @@ struct DeleteTransactionButton: View {
     var body: some View {
         Button("Удалить \(direction == .income ? "доход" : "расход")", role: .destructive) {
             Task {
-                try? await MockTransactionsService.shared.delete(id: transaction.id)
+                try? await TransactionsService.shared.delete(id: transaction.id)
                 onDelete()
             }
         }

@@ -15,7 +15,7 @@ struct TransactionsHistoryView: View {
     @State private var transactions: [Transaction] = []
     @State private var isLoading = false
 
-    private let service = MockTransactionsService.shared
+    private let service = TransactionsService.shared
 
     var body: some View {
         ScrollView {

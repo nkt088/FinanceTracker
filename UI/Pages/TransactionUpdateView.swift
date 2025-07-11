@@ -27,8 +27,8 @@ struct TransactionUpdateView: View {
         return false
     }
 
-    private let categoriesService = MockCategoriesService()
-    private let transactionsService = MockTransactionsService.shared
+    private let categoriesService = CategoriesService.shared
+    private let transactionsService = TransactionsService.shared
     private let account = AccountBrief(id: 1, name: "Основной счёт", balance: 0, currency: "RUB")
     
     var body: some View {

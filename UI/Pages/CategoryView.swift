@@ -11,7 +11,7 @@ struct CategoryView: View {
     @State private var allCategories: [Category] = []
     @State private var searchText: String = ""
 
-    private let service = MockCategoriesService()
+    private let service = CategoriesService.shared
 
     var filteredCategories: [Category] {
         guard !searchText.isEmpty else { return allCategories }
