@@ -43,5 +43,11 @@ struct DecimalTextField: View {
             .onAppear {
                 stringValue = NSDecimalNumber(decimal: value).stringValue
             }
+            .onChange(of: value) {
+                let newString = NSDecimalNumber(decimal: value).stringValue
+                if newString != stringValue {
+                    stringValue = newString
+                }
+            }
     }
 }

@@ -16,7 +16,7 @@ struct WalletView: View {
 
     @FocusState private var isBalanceFocused: Bool
 
-    private let accountService = MockBankAccountsService()
+    private let accountService = BankAccountsService.shared
 
     private let rates: [String: Decimal] = [
         "RUB": 1,

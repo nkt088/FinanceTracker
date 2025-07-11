@@ -70,7 +70,7 @@ struct TransactionUpdateView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Сохранить") {
+                Button(isCreate ? "Создать" : "Сохранить") {
                     Task {
                         await save()
                         dismiss()
@@ -95,6 +95,8 @@ struct TransactionUpdateView: View {
 
     private func save() async {
         guard let category = selectedCategory else { return }
+
+        let account = BankAccountsService.shared.brief()
         let request = TransactionRequest(
             account: account,
             category: category,
@@ -102,9 +104,12 @@ struct TransactionUpdateView: View {
             transactionDate: date,
             comment: comment.isEmpty ? nil : comment
         )
+
         switch mode {
         case .create:
-            _ = try? await transactionsService.create(request)
+            if let created = try? await transactionsService.create(request) {
+                BankAccountsService.shared.applyTransaction(created)
+            }
         case .edit(let transaction):
             let updated = Transaction(
                 id: transaction.id,
