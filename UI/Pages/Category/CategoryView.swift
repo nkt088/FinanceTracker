@@ -8,23 +8,13 @@
 import SwiftUI
 
 struct CategoryView: View {
-    @State private var allCategories: [Category] = []
-    @State private var searchText: String = ""
-
-    private let service = CategoriesService.shared
-
-    var filteredCategories: [Category] {
-        guard !searchText.isEmpty else { return allCategories }
-        return allCategories.filter {
-            $0.name.fuzzyMatch(searchText)
-        }
-    }
+    @StateObject private var viewModel = CategoryViewModel()
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    ForEach(filteredCategories) { category in
+                    ForEach(viewModel.filteredCategories) { category in
                         CategoryRowView(category: category)
                         Divider().padding(.leading)
                     }
@@ -36,13 +26,9 @@ struct CategoryView: View {
             .background(Color(.systemGroupedBackground))
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle("Мои статьи")
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+            .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
             .task {
-                do {
-                    allCategories = try await service.categories()
-                } catch {
-                    allCategories = []
-                }
+                await viewModel.load()
             }
         }
     }
