@@ -14,6 +14,8 @@ struct TransactionsHistoryView: View {
     @State private var endDate: Date = Date()
     @State private var transactions: [Transaction] = []
     @State private var isLoading = false
+    @State private var showAnalytics = false
+    @State private var editingTransaction: Transaction?
 
     private let service = TransactionsService.shared
 
@@ -26,15 +28,16 @@ struct TransactionsHistoryView: View {
                     Spacer()
                 }
 
-                VStack(spacing: 12) {
+                VStack(spacing: 10) {
                     CustomDatePicker(title: "Начало", date: $startDate, components: .date)
+                    Divider()
                     CustomDatePicker(title: "Конец", date: $endDate, components: .date)
+                    Divider()
                     HStack {
                         Text("Сумма")
                         Spacer()
                         Text(totalAmount.formatted(.currency(code: "RUB")
-                                                    .locale(Locale(identifier: "ru_RU"))
-                                                  ))
+                                                    .locale(Locale(identifier: "ru_RU"))))
                     }
                 }
                 .padding()
@@ -53,7 +56,13 @@ struct TransactionsHistoryView: View {
                 } else {
                     LazyVStack(spacing: 0) {
                         ForEach(transactions) { tx in
-                            TransactionRowView(transaction: tx)
+                            Button {
+                                editingTransaction = tx
+                            } label: {
+                                TransactionRowView(transaction: tx)
+                            }
+                            .buttonStyle(.plain)
+
                             Divider().padding(.leading)
                         }
                     }
@@ -71,23 +80,32 @@ struct TransactionsHistoryView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        HStack {
-                            Image(systemName: "chevron.left")
-                            Text("Назад")
-                        }
+                Button {
+                    dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                        Text("Назад")
                     }
                 }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    // заглушка
+                    showAnalytics = true
                 } label: {
                     Image(systemName: "doc")
                 }
             }
-            
+        }
+        .fullScreenCover(isPresented: $showAnalytics) {
+            AnalyticsViewWrapper(direction: direction) {
+                showAnalytics = false
+            }
+        }
+        .fullScreenCover(item: $editingTransaction, onDismiss: reload) { tx in
+            NavigationStack {
+                TransactionUpdateView(direction: direction, mode: .edit(tx))
+            }
         }
         .onChange(of: startDate) {
             if startDate > endDate {
