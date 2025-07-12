@@ -10,11 +10,15 @@
 import Foundation
 
 final class TransactionsService {
-    private var transactions: [Transaction] = []
+    static let shared = TransactionsService()
+    private let cache = TransactionsFileCache()
+    private init() {
+        try? cache.load(from: "transactions")
+    }
 
-    func transactions(from startDate: Date, to endDate: Date, account: AccountBrief) async throws -> [Transaction] {
-        transactions.filter {
-            $0.account.id == account.id &&
+    func transactions(from startDate: Date, to endDate: Date, accountId: Int) async throws -> [Transaction] {
+        cache.transactions.filter {
+            $0.account.id == accountId &&
             $0.transactionDate >= startDate &&
             $0.transactionDate <= endDate
         }
@@ -22,7 +26,7 @@ final class TransactionsService {
 
     func create(_ request: TransactionRequest) async throws -> Transaction {
         let new = Transaction(
-            id: (transactions.map { $0.id }.max() ?? 0) + 1,
+            id: (cache.transactions.map { $0.id }.max() ?? 0) + 1,
             account: request.account,
             category: request.category,
             amount: request.amount,
@@ -31,22 +35,20 @@ final class TransactionsService {
             createdAt: Date(),
             updatedAt: Date()
         )
-        transactions.append(new)
+        cache.add(new)
+        try? cache.save(to: "transactions")
         return new
     }
 
     func update(_ updated: Transaction) async throws -> Transaction {
-        guard let index = transactions.firstIndex(where: { $0.id == updated.id }) else {
-            throw NSError(domain: "TransactionService", code: 404, userInfo: [NSLocalizedDescriptionKey: "Transaction not found"])
-        }
-        transactions[index] = updated
+        try await delete(id: updated.id)
+        cache.add(updated)
+        try? cache.save(to: "transactions")
         return updated
     }
 
     func delete(id: Int) async throws {
-        guard let index = transactions.firstIndex(where: { $0.id == id }) else {
-            throw NSError(domain: "TransactionService", code: 404, userInfo: [NSLocalizedDescriptionKey: "Transaction not found"])
-        }
-        transactions.remove(at: index)
+        cache.remove(by: id)
+        try? cache.save(to: "transactions")
     }
 }

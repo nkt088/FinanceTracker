@@ -1,0 +1,177 @@
+[
+  {
+    "id" : 1,
+    "createdAt" : 1752254769.8123879,
+    "account" : {
+      "id" : 1,
+      "currency" : "RUB",
+      "name" : "Основной счёт",
+      "balance" : 1000
+    },
+    "amount" : 300000,
+    "category" : {
+      "isIncome" : true,
+      "emoji" : "💼",
+      "id" : 10,
+      "name" : "Зарплата"
+    },
+    "comment" : "Зарплата за май",
+    "transactionDate" : 1752254769.8123879,
+    "updatedAt" : 1752254769.8123879
+  },
+  {
+    "category" : {
+      "isIncome" : true,
+      "name" : "Подработка",
+      "id" : 11,
+      "emoji" : "🛠️"
+    },
+    "comment" : "Фриланс",
+    "amount" : 100000,
+    "transactionDate" : 1752254769.812391,
+    "id" : 2,
+    "createdAt" : 1752254769.812392,
+    "updatedAt" : 1752254769.812392,
+    "account" : {
+      "currency" : "RUB",
+      "id" : 1,
+      "balance" : 1000,
+      "name" : "Основной счёт"
+    }
+  },
+  {
+    "createdAt" : 1752254769.8123941,
+    "id" : 3,
+    "account" : {
+      "balance" : 1000,
+      "currency" : "RUB",
+      "id" : 1,
+      "name" : "Основной счёт"
+    },
+    "category" : {
+      "id" : 1,
+      "name" : "Аренда квартиры",
+      "emoji" : "🏠",
+      "isIncome" : false
+    },
+    "amount" : 20000,
+    "transactionDate" : 1752254769.8123941,
+    "updatedAt" : 1752254769.8123941
+  },
+  {
+    "account" : {
+      "id" : 1,
+      "currency" : "RUB",
+      "name" : "Основной счёт",
+      "balance" : 1000
+    },
+    "createdAt" : 1752254769.812396,
+    "id" : 4,
+    "category" : {
+      "name" : "Одежда",
+      "emoji" : "👚",
+      "isIncome" : false,
+      "id" : 2
+    },
+    "updatedAt" : 1752254769.812396,
+    "transactionDate" : 1752254769.812396,
+    "amount" : 30000
+  },
+  {
+    "transactionDate" : 1752254769.812398,
+    "id" : 5,
+    "createdAt" : 1752254769.812398,
+    "comment" : "Джек",
+    "updatedAt" : 1752254769.8123989,
+    "category" : {
+      "isIncome" : false,
+      "name" : "На собачку",
+      "id" : 3,
+      "emoji" : "🐶"
+    },
+    "account" : {
+      "balance" : 1000,
+      "name" : "Основной счёт",
+      "id" : 1,
+      "currency" : "RUB"
+    },
+    "amount" : 80000
+  },
+  {
+    "amount" : 90000,
+    "transactionDate" : 1752254769.8124011,
+    "category" : {
+      "emoji" : "🐶",
+      "id" : 3,
+      "isIncome" : false,
+      "name" : "На собачку"
+    },
+    "updatedAt" : 1752254769.8124011,
+    "createdAt" : 1752254769.8124011,
+    "id" : 6,
+    "comment" : "Энни",
+    "account" : {
+      "name" : "Основной счёт",
+      "currency" : "RUB",
+      "id" : 1,
+      "balance" : 1000
+    }
+  },
+  {
+    "amount" : 200000,
+    "transactionDate" : 1752254769.812403,
+    "account" : {
+      "currency" : "RUB",
+      "balance" : 1000,
+      "id" : 1,
+      "name" : "Основной счёт"
+    },
+    "category" : {
+      "id" : 4,
+      "isIncome" : false,
+      "name" : "Ремонт квартиры",
+      "emoji" : "🛠"
+    },
+    "id" : 7,
+    "updatedAt" : 1752254769.812403,
+    "createdAt" : 1752254769.812403
+  },
+  {
+    "amount" : 10000,
+    "category" : {
+      "name" : "Продукты",
+      "isIncome" : false,
+      "id" : 5,
+      "emoji" : "🍏"
+    },
+    "id" : 8,
+    "transactionDate" : 1752254769.8124051,
+    "createdAt" : 1752254769.8124051,
+    "account" : {
+      "id" : 1,
+      "name" : "Основной счёт",
+      "currency" : "RUB",
+      "balance" : 1000
+    },
+    "updatedAt" : 1752254769.8124051
+  },
+  {
+    "updatedAt" : 1752254769.812407,
+    "createdAt" : 1752254769.812407,
+    "category" : {
+      "isIncome" : false,
+      "name" : "Спортзал",
+      "id" : 6,
+      "emoji" : "🏋️"
+    },
+    "transactionDate" : 1752254769.812407,
+    "amount" : 10000,
+    "id" : 9,
+    "account" : {
+      "id" : 1,
+      "balance" : 1000,
+      "currency" : "RUB",
+      "name" : "Основной счёт"
+    }
+  }
+]

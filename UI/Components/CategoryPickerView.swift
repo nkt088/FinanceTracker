@@ -15,7 +15,7 @@ struct CategoryPickerView: View {
 
     @State private var categories: [Category] = []
 
-    private let categoriesService = MockCategoriesService()
+    private let categoriesService = CategoriesService.shared
 
     var body: some View {
         List {

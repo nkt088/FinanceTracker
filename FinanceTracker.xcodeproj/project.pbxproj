@@ -15,8 +15,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				FinanceTrackerTests/FinanceTrackerTests.swift,
-				FinanceTrackerUITests/FinanceTrackerUITests.swift,
-				FinanceTrackerUITests/FinanceTrackerUITestsLaunchTests.swift,
 			);
 			target = 4AEBFDF22DFC15BD0047BE02 /* FinanceTracker */;
 		};

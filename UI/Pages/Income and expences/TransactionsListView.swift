@@ -22,7 +22,7 @@ struct TransactionsListView: View {
     @State private var editingTransaction: Transaction?
     @State private var sortOption: SortOption = .byDate
 
-    private let service = MockTransactionsService.shared
+    private let service = TransactionsService.shared
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
