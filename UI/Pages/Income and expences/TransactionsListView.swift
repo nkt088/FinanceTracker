@@ -18,7 +18,6 @@ struct TransactionsListView: View {
     @State private var transactions: [Transaction] = []
     @State private var isLoading = true
     @State private var showAddScreen = false
-    @State private var showHistory = false
     @State private var editingTransaction: Transaction?
     @State private var sortOption: SortOption = .byDate
 
@@ -44,11 +43,6 @@ struct TransactionsListView: View {
                 TransactionUpdateView(direction: direction, mode: .edit(tx))
             }
         }
-        .fullScreenCover(isPresented: $showHistory) {
-            NavigationStack {
-                TransactionsHistoryView(direction: direction)
-            }
-        }
         .onChange(of: sortOption) {
             transactions = sortTransactions(transactions)
         }
@@ -62,12 +56,14 @@ struct TransactionsListView: View {
             // Верхняя кнопка
             HStack {
                 Spacer()
-                Button {
-                    showHistory = true
-                } label: {
-                    Image(systemName: "clock.arrow.circlepath")
-                        .font(.title3)
-                }
+                NavigationLink(destination:
+                        TransactionsHistoryView(direction: direction)
+                            .navigationBarBackButtonHidden(true)
+                    ) {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .font(.title3)
+                    }
+                    .buttonStyle(.plain)
             }
 
             // Заголовок
