@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 extension String {
     func damerauLevenshteinDistance(to other: String) -> Int {
         let s = Array(self.lowercased())

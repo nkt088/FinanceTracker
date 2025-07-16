@@ -7,19 +7,12 @@
 import SwiftUI
 
 struct TransactionsListView: View {
-    
-    enum SortOption: String, CaseIterable, Identifiable {
-        case byDate = "По дате"
-        case byAmount = "По сумме"
-
-        var id: Self { self }
-    }
     let direction: Direction
     @State private var transactions: [Transaction] = []
     @State private var isLoading = true
     @State private var showAddScreen = false
     @State private var editingTransaction: Transaction?
-    @State private var sortOption: SortOption = .byDate
+    @State private var sortMode: SortModeTransaction = .byDate
 
     private let service = TransactionsService.shared
 
@@ -43,8 +36,8 @@ struct TransactionsListView: View {
                 TransactionUpdateView(direction: direction, mode: .edit(tx))
             }
         }
-        .onChange(of: sortOption) {
-            transactions = sortTransactions(transactions)
+        .onChange(of: sortMode) {
+            transactions = TransactionSorter.sort(transactions, by: sortMode)
         }
         .task {
             await loadTransactions()
@@ -53,58 +46,53 @@ struct TransactionsListView: View {
 
     private var content: some View {
         VStack(spacing: 16) {
-            // Верхняя кнопка
             HStack {
                 Spacer()
                 NavigationLink(destination:
-                        TransactionsHistoryView(direction: direction)
-                            .navigationBarBackButtonHidden(true)
-                    ) {
-                        Image(systemName: "clock.arrow.circlepath")
-                            .font(.title3)
-                    }
-                    .buttonStyle(.plain)
+                    TransactionsHistoryView(direction: direction)
+                        .navigationBarBackButtonHidden(true)
+                ) {
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.title3)
+                }
+                .buttonStyle(.plain)
             }
 
-            // Заголовок
             HStack {
                 Text(direction == .income ? "Доходы сегодня" : "Расходы сегодня")
                     .font(.largeTitle.bold())
                 Spacer()
             }
+
             HStack {
                 Text("Сортировка")
                     .font(.subheadline)
                 Spacer()
-                Picker("", selection: $sortOption) {
-                    ForEach(SortOption.allCases) { option in
-                        Text(option.rawValue).tag(option)
+                Picker("", selection: $sortMode) {
+                    ForEach(SortModeTransaction.allCases) { mode in
+                        Text(mode.rawValue).tag(mode)
                     }
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 200)
             }
-            // Всего
+
             HStack {
                 Text("Всего")
                     .font(.headline)
                 Spacer()
-                Text(totalAmount.formatted(.currency(code: "RUB")
-                                                .locale(Locale(identifier: "ru_RU"))
-                                          ))
+                Text(totalAmount.formatted(.currency(code: "RUB").locale(Locale(identifier: "ru_RU"))))
                     .font(.headline)
             }
             .padding()
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
-            // Подзаголовок
             Text("Операции")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Список
             if isLoading {
                 ProgressView()
                     .frame(maxHeight: .infinity)
@@ -118,7 +106,6 @@ struct TransactionsListView: View {
                                 TransactionRowView(transaction: tx)
                             }
                             .buttonStyle(.plain)
-
                             Divider().padding(.leading)
                         }
                     }
@@ -141,21 +128,14 @@ struct TransactionsListView: View {
         do {
             let all = try await service.transactions(from: today, to: end, accountId: 1)
             let filtered = all.filter { $0.category.direction == direction }
-            transactions = sortTransactions(filtered)
+            transactions = TransactionSorter.sort(filtered, by: sortMode)
         } catch {
             transactions = []
         }
 
         isLoading = false
     }
-    private func sortTransactions(_ list: [Transaction]) -> [Transaction] {
-        switch sortOption {
-        case .byDate:
-            return list.sorted { $0.transactionDate > $1.transactionDate }
-        case .byAmount:
-            return list.sorted { $0.amount > $1.amount }
-        }
-    }
+
     private func reload() {
         Task {
             await loadTransactions()

@@ -9,15 +9,15 @@ import UIKit
 final class AnalyticsViewController: UIViewController {
 
     private let titleLabel = UILabel()
-    private let backButton = UIButton(type: .system)
     private let periodView = PeriodSummaryView()
-    private let tableContainer = UIView()
-    private let tableView = UITableView(frame: .zero, style: .plain)
+    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
 
     private var startDate = Calendar.current.date(byAdding: .month, value: -1, to: Date())!
     private var endDate = Date()
     private var grouped: [(category: Category, amount: Decimal)] = []
     private var totalAmount: Decimal = 0
+    
+    private var sortMode: SortModeCategory = .byDate
 
     private let direction: Direction
     
@@ -36,20 +36,12 @@ final class AnalyticsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
+        navigationItem.leftBarButtonItem?.tintColor = .systemPurple
         setupViews()
         loadData()
     }
 
     private func setupViews() {
-        backButton.setTitle("Назад", for: .normal)
-        backButton.setTitleColor(.systemPurple, for: .normal)
-        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        backButton.tintColor = .systemPurple
-        backButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
-        backButton.semanticContentAttribute = .forceLeftToRight
-        backButton.contentHorizontalAlignment = .leading
-        backButton.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
 
         titleLabel.text = "Анализ"
         titleLabel.font = UIFont.systemFont(ofSize: 34, weight: .bold)
@@ -75,14 +67,11 @@ final class AnalyticsViewController: UIViewController {
             }
             loadData()
         }
-
-        tableContainer.translatesAutoresizingMaskIntoConstraints = false
-        tableContainer.backgroundColor = .white
-        tableContainer.layer.cornerRadius = 12
-        tableContainer.layer.shadowColor = UIColor.black.cgColor
-        tableContainer.layer.shadowOpacity = 0.05
-        tableContainer.layer.shadowRadius = 4
-        tableContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
+        periodView.onSortChanged = { [weak self] mode in
+            guard let self else { return }
+            sortMode = mode
+            loadData()
+        }
 
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .singleLine
@@ -90,17 +79,12 @@ final class AnalyticsViewController: UIViewController {
         tableView.register(CategoryCell.self, forCellReuseIdentifier: "CategoryCell")
         tableView.dataSource = self
 
-        view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(periodView)
-        view.addSubview(tableContainer)
-        tableContainer.addSubview(tableView)
+        view.addSubview(tableView)
 
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -16),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-
-            titleLabel.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 8),
+            titleLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 12),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
@@ -108,17 +92,13 @@ final class AnalyticsViewController: UIViewController {
             periodView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             periodView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
-            tableContainer.topAnchor.constraint(equalTo: periodView.bottomAnchor, constant: 16),
-            tableContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            tableContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
-
-            tableView.topAnchor.constraint(equalTo: tableContainer.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: tableContainer.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: tableContainer.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: tableContainer.bottomAnchor)
+            tableView.topAnchor.constraint(equalTo: periodView.bottomAnchor, constant: 16),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+
     @objc private func didTapBack() {
         onClose?()
     }
@@ -127,19 +107,15 @@ final class AnalyticsViewController: UIViewController {
         Task {
             let start = Calendar.current.startOfDay(for: startDate)
             let end = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: endDate)!
-                let transactions = try await TransactionsService.shared.transactions(from: start, to: end, accountId: 1)
-                    .filter { $0.category.direction == direction }
-
-                let byCategory = Dictionary(grouping: transactions, by: { $0.category })
-                    .mapValues { $0.reduce(Decimal(0)) { $0 + $1.amount } }
-
-                totalAmount = byCategory.values.reduce(0, +)
-                grouped = byCategory
-                    .map { (category: $0.key, amount: $0.value) }
-                    .sorted { $0.amount > $1.amount }
-
-                periodView.updateAmount(to: totalAmount)
-                tableView.reloadData()
+            let transactions = try await TransactionsService.shared.transactions(from: start, to: end, accountId: 1)
+                .filter { $0.category.direction == direction }
+            
+            grouped = CategorySorter.sort(transactions: transactions, mode: sortMode)
+            totalAmount = grouped.map { $0.amount }.reduce(0, +)
+            
+            periodView.updateAmount(to: totalAmount)
+            periodView.setSortMode(sortMode)
+            tableView.reloadData()
         }
     }
 }

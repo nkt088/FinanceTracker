@@ -10,6 +10,11 @@ import SwiftData
 
 @main
 struct FinanceTrackerApp: App {
+    init() {
+        if let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            print("Documents directory: \(documentsURL.path)")
+        }
+    }
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -29,4 +34,5 @@ struct FinanceTrackerApp: App {
         }
         .modelContainer(sharedModelContainer)
     }
+    
 }

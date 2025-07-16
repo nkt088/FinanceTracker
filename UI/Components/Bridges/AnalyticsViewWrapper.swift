@@ -14,7 +14,7 @@ struct AnalyticsViewWrapper: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let vc = AnalyticsViewController(direction: direction)
         vc.onClose = onClose
-        return UINavigationController(rootViewController: vc)
+        return vc
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}

@@ -14,25 +14,43 @@ struct TransactionsHistoryView: View {
     @State private var endDate: Date = Date()
     @State private var transactions: [Transaction] = []
     @State private var isLoading = false
-    @State private var showAnalytics = false
+    @State private var navigateToAnalytics = false
     @State private var editingTransaction: Transaction?
+    @State private var sortMode: SortModeTransaction = .byDate
 
     private let service = TransactionsService.shared
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
+            VStack(spacing: 10) {
                 HStack {
                     Text("Моя история")
                         .font(.largeTitle.bold())
                     Spacer()
                 }
 
-                VStack(spacing: 10) {
+                VStack(spacing: 4) {
                     CustomDatePicker(title: "Начало", date: $startDate, components: .date)
-                    Divider()
+                    Divider().padding(.vertical, 1)
+                    
                     CustomDatePicker(title: "Конец", date: $endDate, components: .date)
-                    Divider()
+                    Divider().padding(.vertical, 1)
+
+                    HStack {
+                        Text("Сортировка")
+                        Spacer()
+                        Picker("", selection: $sortMode) {
+                            ForEach(SortModeTransaction.allCases) { mode in
+                                Text(mode.rawValue).tag(mode)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(width: 180)
+                    }
+                    .padding(.vertical, 2)
+
+                    Divider().padding(.vertical, 1)
+
                     HStack {
                         Text("Сумма")
                         Spacer()
@@ -40,10 +58,11 @@ struct TransactionsHistoryView: View {
                                                     .locale(Locale(identifier: "ru_RU"))))
                     }
                 }
-                .padding()
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
                 .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .shadow(color: Color.black.opacity(0.04), radius: 2, x: 0, y: 1)
 
                 Text("Операции")
                     .font(.subheadline)
@@ -89,17 +108,16 @@ struct TransactionsHistoryView: View {
                     }
                 }
             }
+
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showAnalytics = true
+                NavigationLink(isActive: $navigateToAnalytics) {
+                    AnalyticsViewWrapper(direction: direction) {
+                        navigateToAnalytics = false
+                    }
+                    .edgesIgnoringSafeArea(.top)
                 } label: {
                     Image(systemName: "doc")
                 }
-            }
-        }
-        .fullScreenCover(isPresented: $showAnalytics) {
-            AnalyticsViewWrapper(direction: direction) {
-                showAnalytics = false
             }
         }
         .fullScreenCover(item: $editingTransaction, onDismiss: reload) { tx in
@@ -118,6 +136,9 @@ struct TransactionsHistoryView: View {
                 startDate = endDate
             }
             reload()
+        }
+        .onChange(of: sortMode) {
+            transactions = TransactionSorter.sort(transactions, by: sortMode)
         }
         .task {
             await load()
@@ -141,7 +162,8 @@ struct TransactionsHistoryView: View {
 
         do {
             let all = try await service.transactions(from: startOfStart, to: endOfEnd, accountId: 1)
-            transactions = all.filter { $0.category.direction == direction }
+            let filtered = all.filter { $0.category.direction == direction }
+            transactions = TransactionSorter.sort(filtered, by: sortMode)
         } catch {
             transactions = []
         }

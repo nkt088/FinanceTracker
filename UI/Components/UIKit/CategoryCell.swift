@@ -19,6 +19,7 @@ final class CategoryCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
         backgroundColor = .clear
+        contentView.backgroundColor = .white
         setup()
     }
 

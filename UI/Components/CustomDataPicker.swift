@@ -13,8 +13,13 @@ struct CustomDatePicker: View {
     let components: DatePickerComponents
 
     var body: some View {
-        DatePicker(title, selection: $date, displayedComponents: components)
-            .environment(\.locale, Locale(identifier: "ru_RU"))
-            .tint(.accent)
+        DatePicker(
+            title,
+            selection: $date,
+            in: ...Date(),
+            displayedComponents: components
+        )
+        .environment(\.locale, Locale(identifier: "ru_RU"))
+        .tint(.accent)
     }
 }

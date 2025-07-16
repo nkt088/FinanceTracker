@@ -16,6 +16,8 @@ final class PeriodSummaryView: UIView {
     private let amountTitleLabel = UILabel()
     private let amountValueLabel = UILabel()
 
+    let sortControl = UISegmentedControl(items: ["По дате", "По сумме"])
+    var onSortChanged: ((SortModeCategory) -> Void)?
     var onStartChanged: ((Date) -> Void)?
     var onEndChanged: ((Date) -> Void)?
 
@@ -63,9 +65,15 @@ final class PeriodSummaryView: UIView {
         startDatePicker.datePickerMode = .date
         startDatePicker.locale = Locale(identifier: "ru_RU")
         startDatePicker.date = Calendar.current.date(byAdding: .month, value: -1, to: Date())!
+        startDatePicker.maximumDate = Date()
+        endDatePicker.tintColor = .accent
 
         endDatePicker.datePickerMode = .date
         endDatePicker.locale = Locale(identifier: "ru_RU")
+        endDatePicker.maximumDate = Date()
+        endDatePicker.tintColor = .accent
+
+
 
         startDatePicker.addTarget(self, action: #selector(startDateChanged), for: .valueChanged)
         endDatePicker.addTarget(self, action: #selector(endDateChanged), for: .valueChanged)
@@ -76,7 +84,14 @@ final class PeriodSummaryView: UIView {
         let sep2 = separatorView()
         let row3 = labeledRow(label: amountTitleLabel, right: amountValueLabel)
 
-        let stack = UIStackView(arrangedSubviews: [row1, sep1, row2, sep2, row3])
+        sortControl.addTarget(self, action: #selector(sortChanged), for: .valueChanged)
+        let sortLabel = UILabel()
+        sortLabel.text = "Сортировка"
+        sortLabel.font = .systemFont(ofSize: 17)
+        let sortRow = labeledRow(label: sortLabel, right: sortControl)
+        sortRow.layoutMargins = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+        sortRow.isLayoutMarginsRelativeArrangement = true
+        let stack = UIStackView(arrangedSubviews: [row1, sep1, row2, sep2, sortRow, separatorView(), row3])
         stack.axis = .vertical
         stack.spacing = 0
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -84,10 +99,10 @@ final class PeriodSummaryView: UIView {
         addSubview(stack)
 
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            stack.topAnchor.constraint(equalTo: topAnchor),
             stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+            stack.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 
@@ -106,7 +121,16 @@ final class PeriodSummaryView: UIView {
         view.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
         return view
     }
-
+    
+    func setSortMode(_ mode: SortModeCategory) {
+        sortControl.selectedSegmentIndex = mode == .byDate ? 0 : 1
+    }
+    
+    @objc private func sortChanged() {
+        let mode: SortModeCategory = sortControl.selectedSegmentIndex == 0 ? .byDate : .byAmount
+        onSortChanged?(mode)
+    }
+    
     @objc private func startDateChanged() {
         onStartChanged?(startDatePicker.date)
     }
