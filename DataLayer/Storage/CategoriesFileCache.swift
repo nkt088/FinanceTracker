@@ -25,8 +25,10 @@ final class CategoriesFileCache {
 
     func load(from fileName: String) throws {
         let url = try fileURL(for: fileName)
-        guard fileManager.fileExists(atPath: url.path) else {
-            categories = []
+        
+        if !fileManager.fileExists(atPath: url.path) {
+            categories = Self.defaultCategories
+            try save(to: fileName)
             return
         }
 
@@ -54,4 +56,17 @@ final class CategoriesFileCache {
         }
         return directory.appendingPathComponent(fileName).appendingPathExtension("json")
     }
+    private static var defaultCategories: [Category] {
+        [
+            Category(id: 2, name: "Одежда", emoji: "👚", direction: .outcome),
+            Category(id: 10, name: "Зарплата", emoji: "💼", direction: .income),
+            Category(id: 4, name: "Ремонт квартиры", emoji: "🛠", direction: .outcome),
+            Category(id: 11, name: "Подработка", emoji: "🛠️", direction: .income),
+            Category(id: 5, name: "Продукты", emoji: "🍏", direction: .outcome),
+            Category(id: 1, name: "Аренда квартиры", emoji: "🏠", direction: .outcome),
+            Category(id: 6, name: "Спортзал", emoji: "🏋️", direction: .outcome),
+            Category(id: 3, name: "На собачку", emoji: "🐶", direction: .outcome)
+        ]
+    }
 }
+
