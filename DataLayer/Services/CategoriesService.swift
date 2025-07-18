@@ -17,9 +17,9 @@ final class CategoriesService {
         try? cache.load(from: "categories")
     }
 
-    func categories() async throws -> [Category] {
-        cache.categories
-    }
+//    func categories() async throws -> [Category] {
+//        cache.categories
+//    }
 
     func categories(for direction: Direction) async throws -> [Category] {
         cache.categories.filter { $0.direction == direction }
@@ -27,5 +27,11 @@ final class CategoriesService {
     
     func category(by id: Int) -> Category? {
         cache.categories.first(where: { $0.id == id })
+    }
+    
+    //network
+    func categories() async throws -> [Category] {
+        let response = try await NetworkService.shared.fetchAllCategories()
+        return response.map { $0.toCategory }
     }
 }

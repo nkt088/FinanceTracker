@@ -21,3 +21,19 @@ struct Category : Identifiable, Hashable {
     let emoji: String
     let direction: Direction
 }
+
+struct CategoryResponse: Decodable {
+    let id: Int
+    let name: String
+    let emoji: String
+    let isIncome: Bool
+
+    var toCategory: Category {
+        Category(
+            id: id,
+            name: name,
+            emoji: emoji,
+            direction: isIncome ? .income : .outcome
+        )
+    }
+}
