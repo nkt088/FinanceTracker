@@ -43,17 +43,17 @@ final class TransactionsService {
 //        return new
 //    }
 
-    func update(_ updated: Transaction) async throws -> Transaction {
-        try await delete(id: updated.id)
-        cache.add(updated)
-        try? cache.save(to: "transactions")
-        return updated
-    }
+//    func update(_ updated: Transaction) async throws -> Transaction {
+//        try await delete(id: updated.id)
+//        cache.add(updated)
+//        try? cache.save(to: "transactions")
+//        return updated
+//    }
 
-    func delete(id: Int) async throws {
-        cache.remove(by: id)
-        try? cache.save(to: "transactions")
-    }
+//    func delete(id: Int) async throws {
+//        cache.remove(by: id)
+//        try? cache.save(to: "transactions")
+//    }
     
     
     //network create
@@ -65,4 +65,11 @@ final class TransactionsService {
         let responses = try await NetworkService.shared.fetchTransactions(accountId: accountId, startDate: start, endDate: end)
         return responses.map { $0.toTransaction() }
     }
+    func update(_ id: Int, with request: TransactionRequest) async throws -> Transaction {
+        try await NetworkService.shared.updateTransaction(id: id, request)
+    }
+    func delete(id: Int) async throws {
+        try await NetworkService.shared.deleteTransaction(id: id)
+    }
+    
 }

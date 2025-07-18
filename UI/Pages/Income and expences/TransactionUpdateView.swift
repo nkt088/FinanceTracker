@@ -17,7 +17,7 @@ struct TransactionUpdateView: View {
 
     let direction: Direction
     let mode: Mode
-
+    @State private var didLoad = false
     @State private var selectedCategory: Category?
     @State private var amount: Decimal = 0
     @State private var date: Date = Date()
@@ -84,20 +84,34 @@ struct TransactionUpdateView: View {
             }
         }
         .task {
-            if case let .edit(transaction) = mode {
-                selectedCategory = CategoriesService.shared.category(by: transaction.categoryId)
-                amount = transaction.amount
-                date = transaction.transactionDate
-                comment = transaction.comment ?? ""
+            guard !didLoad else { return }
+            didLoad = true
+
+            let categories = try? await categoriesService.categories(for: direction)
+            if let categories = categories {
+                if case let .edit(transaction) = mode {
+                    selectedCategory = categories.first { $0.id == transaction.categoryId }
+                    amount = transaction.amount
+                    date = transaction.transactionDate
+                    comment = transaction.comment ?? ""
+                }
             }
         }
+//        .task {
+//            if case let .edit(transaction) = mode {
+//                selectedCategory = CategoriesService.shared.category(by: transaction.categoryId)
+//                amount = transaction.amount
+//                date = transaction.transactionDate
+//                comment = transaction.comment ?? ""
+//            }
+//        }
     }
 
     private func save() async {
         guard let category = selectedCategory else { return }
-
+        
         let account = BankAccountsService.shared.brief()
-
+        
         let request = TransactionRequest(
             accountId: 104,
             categoryId: category.id,
@@ -105,25 +119,26 @@ struct TransactionUpdateView: View {
             transactionDate: date,
             comment: comment.isEmpty ? nil : comment
         )
-
+        
         switch mode {
         case .create:
             if let created = try? await transactionsService.create(request) {
                 BankAccountsService.shared.applyTransaction(created)
             }
-
         case .edit(let transaction):
-            let updated = Transaction(
-                id: transaction.id,
-                accountId: account.id,
-                categoryId: category.id,
-                amount: amount,
-                transactionDate: date,
-                comment: comment,
-                createdAt: transaction.createdAt,
-                updatedAt: Date()
-            )
-            _ = try? await transactionsService.update(updated)
+            _ = try? await transactionsService.update(transaction.id, with: request)
+            //        case .edit(let transaction):
+            //            let updated = Transaction(
+            //                id: transaction.id,
+            //                accountId: account.id,
+            //                categoryId: category.id,
+            //                amount: amount,
+            //                transactionDate: date,
+            //                comment: comment,
+            //                createdAt: transaction.createdAt,
+            //                updatedAt: Date()
+            //            )
+            //            _ = try? await transactionsService.update(updated)
         }
     }
 }

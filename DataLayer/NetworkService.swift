@@ -44,21 +44,21 @@ final class NetworkService {
         request.httpBody = body
 
         // ЛОГ ЗАПРОСА
-        print("➡️ REQUEST: \(method) \(request.url!.absoluteString)")
+        print("REQUEST: \(method) \(request.url!.absoluteString)")
         if let body = body, let json = String(data: body, encoding: .utf8) {
-            print("📦 BODY: \(json)")
+            print("BODY: \(json)")
         }
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
         // ЛОГ ОТВЕТА
         if let httpResponse = response as? HTTPURLResponse {
-            print("⬅️ RESPONSE: \(httpResponse.statusCode)")
+            print("RESPONSE: \(httpResponse.statusCode)")
         }
         if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []),
            let prettyData = try? JSONSerialization.data(withJSONObject: responseJSON, options: .prettyPrinted),
            let prettyString = String(data: prettyData, encoding: .utf8) {
-            print("📬 RESPONSE BODY:\n\(prettyString)")
+            print("RESPONSE BODY:\n\(prettyString)")
         }
 
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -103,7 +103,9 @@ final class NetworkService {
     func fetchCategories(isIncome: Bool) async throws -> [CategoryResponse] {
         try await request(path: "categories/type/\(isIncome)")
     }
-    
+    func deleteTransaction(id: Int) async throws {
+        _ = try await request(path: "transactions/\(id)", method: "DELETE") as EmptyResponse
+    }
 //    func createTransaction(_ requestModel: TransactionRequest) async throws {
 //        let encoder = JSONEncoder()
 //        encoder.dateEncodingStrategy = .iso8601
@@ -130,6 +132,14 @@ final class NetworkService {
 
         let path = "transactions/account/\(accountId)/period?accountId=\(accountId)&startDate=\(start)&endDate=\(end)"
         return try await request(path: path)
+    }
+    func updateTransaction(id: Int, _ requestModel: TransactionRequest) async throws -> Transaction {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        guard let data = try? encoder.encode(requestModel) else {
+            throw NetworkError.encodingError
+        }
+        return try await request(path: "transactions/\(id)", method: "PUT", body: data)
     }
 }
 
@@ -184,3 +194,4 @@ extension Transaction: Decodable {
         comment = try container.decodeIfPresent(String.self, forKey: .comment)
     }
 }
+
