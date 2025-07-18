@@ -36,23 +36,6 @@ enum AccountChangeType: String {
     case creation = "CREATION"
 }
 
-struct AccountHistory {
-    let id: Int
-    let accountId: Int
-    let changeType: AccountChangeType
-    let previousState: AccountState?
-    let newState: AccountState
-    let changeTimestamp: Date
-    let createdAt: Date
-}
-
-struct AccountHistoryResponse {
-    let accountId: Int
-    let accountName: String
-    let currency: String
-    let currentBalance: Decimal
-    let history: [AccountHistory]
-}
 
 struct AccountCreateRequest {
     let name: String
