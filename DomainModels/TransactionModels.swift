@@ -9,8 +9,8 @@ import Foundation
 
 struct Transaction : Identifiable{
     let id: Int
-    let account: AccountBrief
-    let category: Category
+    let accountId: Int
+    let categoryId: Int
     let amount: Decimal
     let transactionDate: Date
     let comment: String?
@@ -19,8 +19,8 @@ struct Transaction : Identifiable{
 }
 
 struct TransactionRequest {
-    let account: AccountBrief
-    let category: Category
+    let accountId: Int
+    let categoryId: Int
     let amount: Decimal
     let transactionDate: Date
     let comment: String?

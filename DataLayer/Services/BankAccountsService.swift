@@ -49,9 +49,11 @@ final class BankAccountsService {
 
     func applyTransaction(_ tx: Transaction) {
         guard !isManualBalanceSet else { return }
-
+        guard let category = CategoriesService.shared.category(by: tx.categoryId) else {
+            return
+        }
         let newBalance: Decimal
-        switch tx.category.direction {
+        switch category.direction {
         case .income:
             newBalance = account.balance + tx.amount
         case .outcome:

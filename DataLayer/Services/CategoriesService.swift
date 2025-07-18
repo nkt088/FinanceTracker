@@ -24,4 +24,8 @@ final class CategoriesService {
     func categories(for direction: Direction) async throws -> [Category] {
         cache.categories.filter { $0.direction == direction }
     }
+    
+    func category(by id: Int) -> Category? {
+        cache.categories.first(where: { $0.id == id })
+    }
 }

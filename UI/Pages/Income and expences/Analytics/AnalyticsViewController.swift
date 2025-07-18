@@ -107,12 +107,26 @@ final class AnalyticsViewController: UIViewController {
         Task {
             let start = Calendar.current.startOfDay(for: startDate)
             let end = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: endDate)!
-            let transactions = try await TransactionsService.shared.transactions(from: start, to: end, accountId: 1)
-                .filter { $0.category.direction == direction }
-            
-            grouped = CategorySorter.sort(transactions: transactions, mode: sortMode)
-            totalAmount = grouped.map { $0.amount }.reduce(0, +)
-            
+
+            let allTransactions = try await TransactionsService.shared.transactions(from: start, to: end, accountId: 1)
+            let allCategories = try await CategoriesService.shared.categories(for: direction)
+            let categoryMap = Dictionary(uniqueKeysWithValues: allCategories.map { ($0.id, $0) })
+            let validCategoryIds = Set(categoryMap.keys)
+
+            let filtered = allTransactions.filter { validCategoryIds.contains($0.categoryId) }
+
+            let groupedDict = Dictionary(grouping: filtered, by: { $0.categoryId })
+
+            var result: [(Category, Decimal)] = []
+            for (categoryId, transactions) in groupedDict {
+                guard let category = categoryMap[categoryId] else { continue }
+                let sum = transactions.reduce(0) { $0 + $1.amount }
+                result.append((category, sum))
+            }
+
+            self.grouped = CategorySorter.sort(grouped: result, mode: sortMode)
+            self.totalAmount = result.map(\.1).reduce(0, +)
+
             periodView.updateAmount(to: totalAmount)
             periodView.setSortMode(sortMode)
             tableView.reloadData()

@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct TransactionsHistoryView: View {
     let direction: Direction
     @Environment(\.dismiss) private var dismiss
@@ -18,7 +20,10 @@ struct TransactionsHistoryView: View {
     @State private var editingTransaction: Transaction?
     @State private var sortMode: SortModeTransaction = .byDate
 
+    @State private var categoriesMap: [Int: Category] = [:]
+
     private let service = TransactionsService.shared
+    private let categoriesService = CategoriesService.shared
 
     var body: some View {
         ScrollView {
@@ -32,7 +37,7 @@ struct TransactionsHistoryView: View {
                 VStack(spacing: 4) {
                     CustomDatePicker(title: "Начало", date: $startDate, components: .date)
                     Divider().padding(.vertical, 1)
-                    
+
                     CustomDatePicker(title: "Конец", date: $endDate, components: .date)
                     Divider().padding(.vertical, 1)
 
@@ -54,8 +59,7 @@ struct TransactionsHistoryView: View {
                     HStack {
                         Text("Сумма")
                         Spacer()
-                        Text(totalAmount.formatted(.currency(code: "RUB")
-                                                    .locale(Locale(identifier: "ru_RU"))))
+                        Text(totalAmount.formatted(.currency(code: "RUB").locale(Locale(identifier: "ru_RU"))))
                     }
                 }
                 .padding(.horizontal, 8)
@@ -78,10 +82,9 @@ struct TransactionsHistoryView: View {
                             Button {
                                 editingTransaction = tx
                             } label: {
-                                TransactionRowView(transaction: tx)
+                                TransactionRowView(transaction: tx, category: categoriesMap[tx.categoryId])
                             }
                             .buttonStyle(.plain)
-
                             Divider().padding(.leading)
                         }
                     }
@@ -162,7 +165,11 @@ struct TransactionsHistoryView: View {
 
         do {
             let all = try await service.transactions(from: startOfStart, to: endOfEnd, accountId: 1)
-            let filtered = all.filter { $0.category.direction == direction }
+            let allCategories = try await categoriesService.categories(for: direction)
+            let categoryIds = Set(allCategories.map(\.id))
+            categoriesMap = Dictionary(uniqueKeysWithValues: allCategories.map { ($0.id, $0) })
+
+            let filtered = all.filter { categoryIds.contains($0.categoryId) }
             transactions = TransactionSorter.sort(filtered, by: sortMode)
         } catch {
             transactions = []

@@ -18,7 +18,7 @@ final class TransactionsService {
 
     func transactions(from startDate: Date, to endDate: Date, accountId: Int) async throws -> [Transaction] {
         cache.transactions.filter {
-            $0.account.id == accountId &&
+            $0.accountId == accountId &&
             $0.transactionDate >= startDate &&
             $0.transactionDate <= endDate
         }
@@ -27,8 +27,8 @@ final class TransactionsService {
     func create(_ request: TransactionRequest) async throws -> Transaction {
         let new = Transaction(
             id: (cache.transactions.map { $0.id }.max() ?? 0) + 1,
-            account: request.account,
-            category: request.category,
+            accountId: request.accountId,
+            categoryId: request.categoryId,
             amount: request.amount,
             transactionDate: request.transactionDate,
             comment: request.comment,

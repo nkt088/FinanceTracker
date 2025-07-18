@@ -85,7 +85,7 @@ struct TransactionUpdateView: View {
         }
         .task {
             if case let .edit(transaction) = mode {
-                selectedCategory = transaction.category
+                selectedCategory = CategoriesService.shared.category(by: transaction.categoryId)
                 amount = transaction.amount
                 date = transaction.transactionDate
                 comment = transaction.comment ?? ""
@@ -97,9 +97,10 @@ struct TransactionUpdateView: View {
         guard let category = selectedCategory else { return }
 
         let account = BankAccountsService.shared.brief()
+
         let request = TransactionRequest(
-            account: account,
-            category: category,
+            accountId: account.id,
+            categoryId: category.id,
             amount: amount,
             transactionDate: date,
             comment: comment.isEmpty ? nil : comment
@@ -110,11 +111,12 @@ struct TransactionUpdateView: View {
             if let created = try? await transactionsService.create(request) {
                 BankAccountsService.shared.applyTransaction(created)
             }
+
         case .edit(let transaction):
             let updated = Transaction(
                 id: transaction.id,
-                account: account,
-                category: category,
+                accountId: account.id,
+                categoryId: category.id,
                 amount: amount,
                 transactionDate: date,
                 comment: comment,
