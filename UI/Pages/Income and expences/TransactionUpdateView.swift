@@ -29,7 +29,7 @@ struct TransactionUpdateView: View {
 
     private let categoriesService = CategoriesService.shared
     private let transactionsService = TransactionsService.shared
-    private let account = AccountBrief(id: 1, name: "Основной счёт", balance: 0, currency: "RUB")
+    private let account = AccountBrief(id: 104, name: "Основной счёт", balance: 0, currency: "RUB")
     
     var body: some View {
         Form {
@@ -99,7 +99,7 @@ struct TransactionUpdateView: View {
         let account = BankAccountsService.shared.brief()
 
         let request = TransactionRequest(
-            accountId: account.id,
+            accountId: 104,
             categoryId: category.id,
             amount: amount,
             transactionDate: date,

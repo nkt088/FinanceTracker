@@ -126,10 +126,12 @@ struct TransactionsListView: View {
     private func loadData() async {
         isLoading = true
         let today = Calendar.current.startOfDay(for: Date())
-        let end = Calendar.current.date(byAdding: .day, value: 1, to: today)!
-
+        let end = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: today)!
         do {
-            let all = try await service.transactions(from: today, to: end, accountId: 1)
+            //для json
+            //let all = try await service.transactions(from: today, to: end, accountId: 1)
+            //для network
+            let all = try await service.transactions(from: today, to: end, accountId: 104)
 
             // получить нужные категории по direction
             let allCategories = try await categoriesService.categories(for: direction)

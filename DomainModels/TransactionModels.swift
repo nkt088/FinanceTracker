@@ -26,15 +26,28 @@ struct TransactionRequest {
     let comment: String?
 }
 
-struct TransactionResponse {
+struct TransactionResponse: Decodable {
     let id: Int
     let account: AccountBrief
     let category: Category
-    let amount: Decimal
+    let amount: String
     let transactionDate: Date
     let comment: String?
     let createdAt: Date
     let updatedAt: Date
+
+    func toTransaction() -> Transaction {
+        Transaction(
+            id: id,
+            accountId: account.id,
+            categoryId: category.id,
+            amount: Decimal(string: amount) ?? 0,
+            transactionDate: transactionDate,
+            comment: comment,
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        )
+    }
 }
 
 extension TransactionRequest: Encodable {
