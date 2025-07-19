@@ -15,6 +15,9 @@ struct TransactionsListView: View {
     @State private var sortMode: SortModeTransaction = .byDate
 
     private let service = TransactionsService.shared
+    private let categoriesService = CategoriesService.shared
+
+    @State private var categoriesMap: [Int: Category] = [:]
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -40,7 +43,7 @@ struct TransactionsListView: View {
             transactions = TransactionSorter.sort(transactions, by: sortMode)
         }
         .task {
-            await loadTransactions()
+            await loadData()
         }
     }
 
@@ -103,7 +106,7 @@ struct TransactionsListView: View {
                             Button {
                                 editingTransaction = tx
                             } label: {
-                                TransactionRowView(transaction: tx)
+                                TransactionRowView(transaction: tx, category: categoriesMap[tx.categoryId])
                             }
                             .buttonStyle(.plain)
                             Divider().padding(.leading)
@@ -120,14 +123,28 @@ struct TransactionsListView: View {
         transactions.reduce(0) { $0 + $1.amount }
     }
 
-    private func loadTransactions() async {
+    private func loadData() async {
         isLoading = true
-        let today = Calendar.current.startOfDay(for: Date())
-        let end = Calendar.current.date(byAdding: .day, value: 1, to: today)!
-
+        let calendar = Calendar.current
+        let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: Date())!
+        let start = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
+//        var calendar = Calendar.current
+//        calendar.timeZone = TimeZone.current
+//        
+//        let today = calendar.startOfDay(for: Date())
+//        let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: today)!
         do {
-            let all = try await service.transactions(from: today, to: end, accountId: 1)
-            let filtered = all.filter { $0.category.direction == direction }
+            //для json
+            //let all = try await service.transactions(from: today, to: end, accountId: 1)
+            //для network
+            let all = try await service.transactions(from: start, to: end, accountId: 104)
+            // получить нужные категории по direction
+            let allCategories = try await categoriesService.categories(for: direction)
+            let categoryIds = Set(allCategories.map(\.id))
+            categoriesMap = Dictionary(uniqueKeysWithValues: allCategories.map { ($0.id, $0) })
+
+            // фильтрация по categoryId
+            let filtered = all.filter { categoryIds.contains($0.categoryId) }
             transactions = TransactionSorter.sort(filtered, by: sortMode)
         } catch {
             transactions = []
@@ -138,7 +155,7 @@ struct TransactionsListView: View {
 
     private func reload() {
         Task {
-            await loadTransactions()
+            await loadData()
         }
     }
 }

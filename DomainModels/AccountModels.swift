@@ -17,11 +17,37 @@ struct Account {
     let updatedAt: Date
 }
 
-struct AccountBrief {
+//struct AccountBrief {
+//    let id: Int
+//    let name: String
+//    let balance: Decimal
+//    let currency: String
+//}
+struct AccountBrief: Decodable {
     let id: Int
     let name: String
     let balance: Decimal
     let currency: String
+
+    init(id: Int, name: String, balance: Decimal, currency: String) {
+        self.id = id
+        self.name = name
+        self.balance = balance
+        self.currency = currency
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, balance, currency
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        let balanceString = try container.decode(String.self, forKey: .balance)
+        balance = Decimal(string: balanceString) ?? 1
+        currency = try container.decode(String.self, forKey: .currency)
+    }
 }
 
 struct AccountState {
@@ -36,23 +62,6 @@ enum AccountChangeType: String {
     case creation = "CREATION"
 }
 
-struct AccountHistory {
-    let id: Int
-    let accountId: Int
-    let changeType: AccountChangeType
-    let previousState: AccountState?
-    let newState: AccountState
-    let changeTimestamp: Date
-    let createdAt: Date
-}
-
-struct AccountHistoryResponse {
-    let accountId: Int
-    let accountName: String
-    let currency: String
-    let currentBalance: Decimal
-    let history: [AccountHistory]
-}
 
 struct AccountCreateRequest {
     let name: String

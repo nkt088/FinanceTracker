@@ -12,7 +12,7 @@ extension Category {
         [
             "id": id,
             "name": name,
-            "emoji": String(emoji),
+            "emoji": emoji,
             "isIncome": direction == .income
         ]
     }
@@ -21,7 +21,7 @@ extension Category {
         guard let dict = jsonObject as? [String: Any],
               let id = dict["id"] as? Int,
               let name = dict["name"] as? String,
-              let emojiStr = dict["emoji"] as? String, let emoji = emojiStr.first,
+              let emoji = dict["emoji"] as? String,
               let isIncome = dict["isIncome"] as? Bool
         else { return nil }
 

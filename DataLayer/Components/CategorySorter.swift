@@ -7,29 +7,42 @@
 
 import Foundation
 
+//enum SortModeCategory {
+//    case byDate
+//    case byAmount
+//}
+
+//struct CategorySorter {
+//    static func sort(grouped: [(category: Category, amount: Decimal)], mode: SortModeCategory) -> [(category: Category, amount: Decimal)] {
+//        switch mode {
+//        case .byAmount:
+//            return grouped.sorted { $0.amount > $1.amount }
+//        case .byDate:
+//            return grouped
+//        }
+//    }
+//}
 enum SortModeCategory {
     case byDate
     case byAmount
 }
 
 struct CategorySorter {
-    static func sort(transactions: [Transaction], mode: SortModeCategory) -> [(category: Category, amount: Decimal)] {
-        let grouped = Dictionary(grouping: transactions, by: { $0.category })
-
+    static func sort(grouped: [(category: Category, transactions: [Transaction])], mode: SortModeCategory) -> [(category: Category, amount: Decimal)] {
         switch mode {
-        case .byDate:
-            return grouped
-                .map { category, txs in
-                    let latestDate = txs.map(\.transactionDate).max() ?? .distantPast
-                    return (category: category, amount: txs.reduce(0, { $0 + $1.amount }), latest: latestDate)
-                }
-                .sorted { $0.latest > $1.latest }
-                .map { ($0.category, $0.amount) }
         case .byAmount:
             return grouped
-                .map { (category: $0.key, amount: $0.value.reduce(0) { $0 + $1.amount }) }
-                .sorted { $0.amount > $1.amount }
+                .map { ($0.category, $0.transactions.reduce(0) { $0 + $1.amount }) }
+                .sorted { $0.1 > $1.1 }
+
+        case .byDate:
+            return grouped
+                .sorted {
+                    let date0 = $0.transactions.map(\.transactionDate).max() ?? .distantPast
+                    let date1 = $1.transactions.map(\.transactionDate).max() ?? .distantPast
+                    return date0 > date1
+                }
+                .map { ($0.category, $0.transactions.reduce(0) { $0 + $1.amount }) }
         }
     }
 }
-

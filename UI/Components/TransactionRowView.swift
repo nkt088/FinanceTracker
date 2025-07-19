@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TransactionRowView: View {
     let transaction: Transaction
+    let category: Category?
 
     var body: some View {
         HStack(spacing: 12) {
@@ -16,13 +17,14 @@ struct TransactionRowView: View {
                 Circle()
                     .fill(Color.accent.opacity(0.15))
                     .aspectRatio(1, contentMode: .fit)
-                Text(String(transaction.category.emoji))
+
+                Text(String(category?.emoji ?? "•"))
                     .font(.system(size: 16))
                     .padding(6)
             }
             .frame(width: 32, height: 32)
 
-            Text(transaction.category.name)
+            Text(category?.name ?? "Категория")
                 .font(.body)
 
             Spacer()
