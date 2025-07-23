@@ -43,44 +43,44 @@ final class NetworkService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = body
 
-        // ЛОГ ЗАПРОСА
+        /*#if DEBUG
         print("REQUEST: \(method) \(request.url!.absoluteString)")
         if let body = body, let json = String(data: body, encoding: .utf8) {
             print("BODY: \(json)")
         }
+        #endif*/
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
-        // ЛОГ ОТВЕТА
-        if let httpResponse = response as? HTTPURLResponse {
-            print("RESPONSE: \(httpResponse.statusCode)")
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkError.invalidResponse
         }
+
+        /*#if DEBUG
+        print("RESPONSE: \(httpResponse.statusCode)")
         if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []),
            let prettyData = try? JSONSerialization.data(withJSONObject: responseJSON, options: .prettyPrinted),
            let prettyString = String(data: prettyData, encoding: .utf8) {
             print("RESPONSE BODY:\n\(prettyString)")
         }
+        #endif*/
 
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw NetworkError.invalidResponse
-        }
         guard 200..<300 ~= httpResponse.statusCode else {
             throw NetworkError.serverError(statusCode: httpResponse.statusCode)
         }
+
         do {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .custom { decoder in
                 let container = try decoder.singleValueContainer()
                 let dateStr = try container.decode(String.self)
 
-                // ISO8601 без микросекунд
                 let iso8601 = ISO8601DateFormatter()
                 iso8601.formatOptions = [.withInternetDateTime]
                 if let date = iso8601.date(from: dateStr) {
                     return date
                 }
 
-                // ISO8601 с микросекундами
                 let formatter = DateFormatter()
                 formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXXXX"
                 formatter.locale = Locale(identifier: "en_US_POSIX")

@@ -62,7 +62,6 @@ enum AccountChangeType: String {
     case creation = "CREATION"
 }
 
-
 //struct AccountCreateRequest {
 //    let name: String
 //    let balance: Decimal
