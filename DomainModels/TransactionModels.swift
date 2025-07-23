@@ -74,3 +74,55 @@ extension TransactionRequest: Encodable {
 }
 
 struct EmptyResponse: Decodable {}
+
+extension Transaction: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case accountId
+        case categoryId
+        case amount
+        case transactionDate
+        case comment
+        case createdAt
+        case updatedAt
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        id = try container.decode(Int.self, forKey: .id)
+        accountId = try container.decode(Int.self, forKey: .accountId)
+        categoryId = try container.decode(Int.self, forKey: .categoryId)
+
+        let amountString = try container.decode(String.self, forKey: .amount)
+        guard let amountDecimal = Decimal(string: amountString) else {
+            throw DecodingError.dataCorruptedError(forKey: .amount, in: container, debugDescription: "Invalid decimal string")
+        }
+        amount = amountDecimal
+
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime]
+
+        guard let parsedTransactionDate = dateFormatter.date(from: try container.decode(String.self, forKey: .transactionDate)) else {
+            throw DecodingError.dataCorruptedError(forKey: .transactionDate, in: container, debugDescription: "Invalid transactionDate")
+        }
+        transactionDate = parsedTransactionDate
+
+        // createdAt и updatedAt могут отсутствовать в ответе на создание — обрабатываем безопасно
+        if let createdAtString = try? container.decode(String.self, forKey: .createdAt),
+           let parsedCreatedAt = dateFormatter.date(from: createdAtString) {
+            createdAt = parsedCreatedAt
+        } else {
+            createdAt = transactionDate // или Date()
+        }
+
+        if let updatedAtString = try? container.decode(String.self, forKey: .updatedAt),
+           let parsedUpdatedAt = dateFormatter.date(from: updatedAtString) {
+            updatedAt = parsedUpdatedAt
+        } else {
+            updatedAt = transactionDate // или Date()
+        }
+
+        comment = try container.decodeIfPresent(String.self, forKey: .comment)
+    }
+}
