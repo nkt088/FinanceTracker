@@ -76,6 +76,7 @@ struct WalletView: View {
                         Button("Сохранить") {
                             Task {
                                 await saveNetwork()
+                                await save()
                                 isEditing = false
                             }
                         }
@@ -122,7 +123,7 @@ struct WalletView: View {
     private func loadNetwork() async {
         do {
             let account = try await NetworkService.shared.fetchAccount()
-            balance = Decimal(string: account.balance) ?? 2
+            balance = Decimal(string: account.balance) ?? 0
             currency = account.currency
             previousCurrency = account.currency
             accountId = account.id
@@ -133,7 +134,6 @@ struct WalletView: View {
             accountId = nil
         }
     }
-//рудимент
 
     private func save() async {
         let balanceString = NSDecimalNumber(decimal: balance).stringValue
