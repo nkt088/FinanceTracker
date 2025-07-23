@@ -50,12 +50,12 @@ struct AccountBrief: Decodable {
     }
 }
 
-struct AccountState {
-    let id: Int
-    let name: String
-    let balance: Decimal
-    let currency: String
-}
+//struct AccountState {
+//    let id: Int
+//    let name: String
+//    let balance: Decimal
+//    let currency: String
+//}
 
 enum AccountChangeType: String {
     case modification = "MODIFICATION"
@@ -63,14 +63,24 @@ enum AccountChangeType: String {
 }
 
 
-struct AccountCreateRequest {
+//struct AccountCreateRequest {
+//    let name: String
+//    let balance: Decimal
+//    let currency: String
+//}
+
+struct AccountUpdateRequest: Encodable {
     let name: String
-    let balance: Decimal
+    let balance: String
     let currency: String
 }
 
-struct AccountUpdateRequest {
+struct AccountResponse: Decodable {
+    let id: Int
+    let userId: Int
     let name: String
-    let balance: Decimal
+    let balance: String
     let currency: String
+    let createdAt: Date
+    let updatedAt: Date
 }

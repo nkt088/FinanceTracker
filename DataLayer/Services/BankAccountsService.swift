@@ -34,11 +34,13 @@ final class BankAccountsService {
 
     func updateAccount(_ update: AccountUpdateRequest) async throws -> Account {
         isManualBalanceSet = true
+        let balanceDecimal = Decimal(string: update.balance) ?? 0
+
         account = Account(
             id: account.id,
             userId: account.userId,
             name: update.name,
-            balance: update.balance,
+            balance: balanceDecimal,
             currency: update.currency,
             createdAt: account.createdAt,
             updatedAt: Date()

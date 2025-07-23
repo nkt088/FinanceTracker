@@ -13,10 +13,13 @@ struct WalletView: View {
     @State private var currency: String = "RUB"
     @State private var previousCurrency: String = "RUB"
     @State private var spoilerHidden = true
+    @State private var accountId: Int?
 
     @FocusState private var isBalanceFocused: Bool
 
     private let accountService = BankAccountsService.shared
+    //private let accountService = NetworkService.shared
+
 
     private let rates: [String: Decimal] = [
         "RUB": 1,
@@ -54,7 +57,7 @@ struct WalletView: View {
                 }
                 // * pull refresh
                 .refreshable {
-                    await load()
+                    await loadNetwork()
                 }
 
                 if showCurrencyPicker {
@@ -72,7 +75,7 @@ struct WalletView: View {
                     if isEditing {
                         Button("Сохранить") {
                             Task {
-                                await save()
+                                await saveNetwork()
                                 isEditing = false
                             }
                         }
@@ -85,7 +88,7 @@ struct WalletView: View {
                 }
             }
             .task {
-                await load()
+                await loadNetwork()
             }
             .onAppear {
                     ShakeDetector.shared.onShake = {
@@ -116,14 +119,39 @@ struct WalletView: View {
             previousCurrency = "RUB"
         }
     }
+    private func loadNetwork() async {
+        do {
+            let account = try await NetworkService.shared.fetchAccount()
+            balance = Decimal(string: account.balance) ?? 2
+            currency = account.currency
+            previousCurrency = account.currency
+            accountId = account.id
+        } catch {
+            balance = 0
+            currency = "RUB"
+            previousCurrency = "RUB"
+            accountId = nil
+        }
+    }
+//рудимент
 
     private func save() async {
+        let balanceString = NSDecimalNumber(decimal: balance).stringValue
         let request = AccountUpdateRequest(
             name: "Основной счёт",
-            balance: balance,
+            balance: balanceString,
             currency: currency
         )
         _ = try? await accountService.updateAccount(request)
+    }
+    private func saveNetwork() async {
+        guard let accountId else { return }
+            let request = AccountUpdateRequest(
+                name: "Основной счёт",
+                balance: balance.description,
+                currency: currency
+            )
+            _ = try? await NetworkService.shared.updateAccount(id: accountId, request)
     }
 
     private func selectCurrency(_ new: String) {
