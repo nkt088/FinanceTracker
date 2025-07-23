@@ -25,14 +25,15 @@ final class CategoriesFileCache {
 
     func load(from fileName: String) throws {
         let url = try fileURL(for: fileName)
-        
+
         if !fileManager.fileExists(atPath: url.path) {
-            categories = Self.defaultCategories
-            try save(to: fileName)
+            categories = []
+            print("file doest exist")
             return
         }
 
         let data = try Data(contentsOf: url)
+
         let raw = try JSONSerialization.jsonObject(with: data, options: []) as? [Any] ?? []
         var loaded: [Category] = []
 
@@ -50,23 +51,15 @@ final class CategoriesFileCache {
         categories.filter { $0.direction == direction }
     }
 
-    private func fileURL(for fileName: String) throws -> URL {
-        guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+    func set(_ newCategories: [Category]) {
+        categories = newCategories
+    }
+
+    func fileURL(for fileName: String) throws -> URL {
+        guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             throw NSError(domain: "FileError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Document directory not found"])
         }
         return directory.appendingPathComponent(fileName).appendingPathExtension("json")
-    }
-    private static var defaultCategories: [Category] {
-        [
-            Category(id: 2, name: "Одежда", emoji: "👚", direction: .outcome),
-            Category(id: 10, name: "Зарплата", emoji: "💼", direction: .income),
-            Category(id: 4, name: "Ремонт квартиры", emoji: "🛠", direction: .outcome),
-            Category(id: 11, name: "Подработка", emoji: "🛠️", direction: .income),
-            Category(id: 5, name: "Продукты", emoji: "🍏", direction: .outcome),
-            Category(id: 1, name: "Аренда квартиры", emoji: "🏠", direction: .outcome),
-            Category(id: 6, name: "Спортзал", emoji: "🏋️", direction: .outcome),
-            Category(id: 3, name: "На собачку", emoji: "🐶", direction: .outcome)
-        ]
     }
 }
 
