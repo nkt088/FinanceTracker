@@ -7,7 +7,7 @@
 // MARK: - Account Models
 import Foundation
 
-struct Account {
+struct Account : Codable{
     let id: Int
     let userId: Int
     let name: String

@@ -15,9 +15,29 @@ final class AccountFileCache {
     private let fileName = "account"
     private var account: Account?
 
+//    func save(_ account: Account) throws {
+//        let object = account.jsonObject
+//        let data = try JSONSerialization.data(withJSONObject: object, options: .prettyPrinted)
+//        let url = try fileURL()
+//        try data.write(to: url)
+//        self.account = account
+//    }
+//
+//    func load() throws {
+//        let url = try fileURL()
+//        guard fileManager.fileExists(atPath: url.path) else {
+//            self.account = nil
+//            return
+//        }
+//
+//        let data = try Data(contentsOf: url)
+//        let raw = try JSONSerialization.jsonObject(with: data, options: [])
+//        self.account = Account.parse(jsonObject: raw)
+//    }
     func save(_ account: Account) throws {
-        let object = account.jsonObject
-        let data = try JSONSerialization.data(withJSONObject: object, options: .prettyPrinted)
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(account)
         let url = try fileURL()
         try data.write(to: url)
         self.account = account
@@ -29,10 +49,10 @@ final class AccountFileCache {
             self.account = nil
             return
         }
-
         let data = try Data(contentsOf: url)
-        let raw = try JSONSerialization.jsonObject(with: data, options: [])
-        self.account = Account.parse(jsonObject: raw)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        self.account = try decoder.decode(Account.self, from: data)
     }
 
     func current() -> Account? {

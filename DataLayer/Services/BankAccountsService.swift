@@ -28,7 +28,44 @@ final class BankAccountsService {
         updatedAt: Date()
     )
 
+//    func account() async throws -> Account {
+//        return account
+//    }
     func account() async throws -> Account {
+        // Если в памяти нет актуальных данных — пробуем подгрузить
+        if cache.current() == nil {
+            try? cache.load()
+            if let loaded = cache.current() {
+                self.account = loaded
+            } else if NetworkMonitor.shared.isConnected {
+                let remote = try await NetworkService.shared.fetchAccount()
+                let account = Account(
+                    id: remote.id,
+                    userId: remote.userId,
+                    name: remote.name,
+                    balance: Decimal(string: remote.balance) ?? 0,
+                    currency: remote.currency,
+                    createdAt: remote.createdAt,
+                    updatedAt: remote.updatedAt
+                )
+                try? cache.save(account)
+                self.account = account
+            } else {
+                // Нет сети, нет файла — создаём дефолтный локальный аккаунт
+                let account = Account(
+                    id: -1,
+                    userId: -1,
+                    name: "Основной счёт",
+                    balance: 0,
+                    currency: "RUB",
+                    createdAt: Date(),
+                    updatedAt: Date()
+                )
+                try? cache.save(account)
+                self.account = account
+            }
+        }
+
         return account
     }
 
@@ -88,5 +125,17 @@ final class BankAccountsService {
         if let loaded = cache.current() {
             self.account = loaded
         }
+    }
+    func saveLoadedAccount(_ response: AccountResponse) throws {
+        let account = Account(
+            id: response.id,
+            userId: response.userId,
+            name: response.name,
+            balance: Decimal(string: response.balance) ?? 0,
+            currency: response.currency,
+            createdAt: response.createdAt,
+            updatedAt: response.updatedAt
+        )
+        try? cache.save(account)
     }
 }

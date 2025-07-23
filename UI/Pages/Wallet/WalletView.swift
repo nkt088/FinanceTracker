@@ -57,7 +57,10 @@ struct WalletView: View {
                 }
                 // * pull refresh
                 .refreshable {
-                    await loadNetwork()
+                    if NetworkMonitor.shared.isConnected {
+                        await loadNetwork()
+                    }
+                    else { await load() }
                 }
 
                 if showCurrencyPicker {
@@ -74,10 +77,14 @@ struct WalletView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if isEditing {
                         Button("Сохранить") {
+                            isEditing = false
                             Task {
-                                await saveNetwork()
-                                await save()
-                                isEditing = false
+                                if NetworkMonitor.shared.isConnected {
+                                    await save()
+                                    await saveNetwork()
+                                }
+                                else { await save() }
+                                //isEditing = false
                             }
                         }
                     } else {
@@ -88,9 +95,23 @@ struct WalletView: View {
                     }
                 }
             }
+            //            .task {
+            //                if NetworkMonitor.shared.isConnected {
+            //                    await load()
+            //                    await saveNetwork()
+            //                }
+            //                else { await load() }
+            //            }
             .task {
-                await loadNetwork()
-            }
+                  if NetworkMonitor.shared.isConnected {
+                      await load()
+                      await saveNetwork()
+                      await loadNetwork()
+                  } else {
+                      await load()
+                  }
+              }
+            
             .onAppear {
                     ShakeDetector.shared.onShake = {
                         spoilerHidden.toggle()
@@ -114,10 +135,12 @@ struct WalletView: View {
             balance = acc.balance
             currency = acc.currency
             previousCurrency = acc.currency
+            accountId = acc.id
         } catch {
             balance = 0
             currency = "RUB"
             previousCurrency = "RUB"
+            accountId = nil
         }
     }
     private func loadNetwork() async {
@@ -128,10 +151,7 @@ struct WalletView: View {
             previousCurrency = account.currency
             accountId = account.id
         } catch {
-            balance = 0
-            currency = "RUB"
-            previousCurrency = "RUB"
-            accountId = nil
+            print("error")
         }
     }
 
