@@ -162,9 +162,11 @@ struct TransactionsHistoryView: View {
         isLoading = true
         let startOfStart = Calendar.current.startOfDay(for: startDate)
         let endOfEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: endDate)!
+        let accountId = AccountManager.shared.accountId
+
 
         do {
-            let all = try await service.transactions(from: startOfStart, to: endOfEnd, accountId: 104)
+            let all = try await service.transactions(from: startOfStart, to: endOfEnd, accountId: accountId!)
             //let all = try await service.transactions(from: startOfStart, to: endOfEnd, accountId: 1)
             let allCategories = try await categoriesService.categories(for: direction)
             let categoryIds = Set(allCategories.map(\.id))

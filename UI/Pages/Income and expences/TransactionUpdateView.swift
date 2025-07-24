@@ -22,6 +22,7 @@ struct TransactionUpdateView: View {
     @State private var amount: Decimal = 0
     @State private var date: Date = Date()
     @State private var comment: String = ""
+    
     private var isCreate: Bool {
         if case .create = mode { return true }
         return false
@@ -29,7 +30,7 @@ struct TransactionUpdateView: View {
 
     private let categoriesService = CategoriesService.shared
     private let transactionsService = TransactionsService.shared
-    private let account = AccountBrief(id: 104, name: "Основной счёт", balance: 0, currency: "RUB")
+    private let account = AccountBrief(id: AccountManager.shared.accountId!, name: "Основной счёт", balance: 0, currency: "RUB")
     
     var body: some View {
         Form {
@@ -113,7 +114,7 @@ struct TransactionUpdateView: View {
         let account = BankAccountsService.shared.brief()
         
         let request = TransactionRequest(
-            accountId: 104,
+            accountId: AccountManager.shared.accountId!,
             categoryId: category.id,
             amount: amount,
             transactionDate: date,

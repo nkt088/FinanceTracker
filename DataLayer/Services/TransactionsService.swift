@@ -61,7 +61,7 @@ final class TransactionsService {
         try await NetworkService.shared.createTransaction(request)
     }
     //вывод на ListView
-    func transactions(from start: Date, to end: Date, accountId: Int = 104) async throws -> [Transaction] {
+    func transactions(from start: Date, to end: Date, accountId: Int = AccountManager.shared.accountId!) async throws -> [Transaction] {
         let responses = try await NetworkService.shared.fetchTransactions(accountId: accountId, startDate: start, endDate: end)
         return responses.map { $0.toTransaction() }
     }

@@ -107,8 +107,9 @@ final class AnalyticsViewController: UIViewController {
         Task {
             let start = Calendar.current.startOfDay(for: startDate)
             let end = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: endDate)!
+            let accountId = AccountManager.shared.accountId
 
-            let allTransactions = try await TransactionsService.shared.transactions(from: start, to: end, accountId: 104)
+            let allTransactions = try await TransactionsService.shared.transactions(from: start, to: end, accountId: accountId!)
             let allCategories = try await CategoriesService.shared.categories(for: direction)
             let categoryMap = Dictionary(uniqueKeysWithValues: allCategories.map { ($0.id, $0) })
             let validCategoryIds = Set(categoryMap.keys)
