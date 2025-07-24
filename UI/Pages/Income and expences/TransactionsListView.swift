@@ -43,6 +43,13 @@ struct TransactionsListView: View {
             transactions = TransactionSorter.sort(transactions, by: sortMode)
         }
         .task {
+            if AccountFileCache.shared.current() == nil {
+                if NetworkMonitor.shared.isConnected {
+                    if let remote = try? await NetworkService.shared.fetchAccount() {
+                        try? BankAccountsService.shared.saveLoadedAccount(remote)
+                    }
+                }
+            }
             await loadData()
         }
     }
