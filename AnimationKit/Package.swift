@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "AnimationKit",
     platforms: [
-        .iOS("18.4") // iOS 18.4 как требуется
+        .iOS("18.4")
     ],
     products: [
         .library(

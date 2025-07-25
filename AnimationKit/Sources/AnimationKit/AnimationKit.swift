@@ -1,9 +1,9 @@
 // LottieLoader.swift
-import Foundation
-import Lottie
 import UIKit
+import Lottie
 
 public class LottieLoader {
+    @MainActor
     public static func makeView(animationName: String, completion: @escaping () -> Void) -> UIView {
         let container = UIView()
         let animationView = LottieAnimationView(name: animationName)
@@ -17,12 +17,14 @@ public class LottieLoader {
 
         animationView.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(animationView)
+
         NSLayoutConstraint.activate([
             animationView.topAnchor.constraint(equalTo: container.topAnchor),
             animationView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
             animationView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             animationView.trailingAnchor.constraint(equalTo: container.trailingAnchor)
         ])
+
         return container
     }
 }
