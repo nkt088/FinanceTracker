@@ -5,6 +5,7 @@
 //  Created by MakhovN @nktmahov
 //
 import UIKit
+import PieChart
 
 final class AnalyticsViewController: UIViewController {
 
@@ -16,6 +17,8 @@ final class AnalyticsViewController: UIViewController {
     private var endDate = Date()
     private var grouped: [(category: Category, amount: Decimal)] = []
     private var totalAmount: Decimal = 0
+    
+    private let pieChartView = PieChartView()
     
     private var sortMode: SortModeCategory = .byDate
 
@@ -42,12 +45,16 @@ final class AnalyticsViewController: UIViewController {
     }
 
     private func setupViews() {
-
         titleLabel.text = "Анализ"
         titleLabel.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         periodView.translatesAutoresizingMaskIntoConstraints = false
+        pieChartView.translatesAutoresizingMaskIntoConstraints = false
+        pieChartView.clipsToBounds = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Обработчики дат и сортировки
         periodView.onStartChanged = { [weak self] date in
             guard let self else { return }
             startDate = date
@@ -67,20 +74,23 @@ final class AnalyticsViewController: UIViewController {
             }
             loadData()
         }
+
         periodView.onSortChanged = { [weak self] mode in
             guard let self else { return }
             sortMode = mode
             loadData()
         }
 
+        // Настройка tableView
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .singleLine
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(CategoryCell.self, forCellReuseIdentifier: "CategoryCell")
         tableView.dataSource = self
 
+        // Добавляем сабвью
         view.addSubview(titleLabel)
         view.addSubview(periodView)
+        view.addSubview(pieChartView)
         view.addSubview(tableView)
 
         NSLayoutConstraint.activate([
@@ -88,17 +98,22 @@ final class AnalyticsViewController: UIViewController {
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
-            periodView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
+            periodView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             periodView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             periodView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
-            tableView.topAnchor.constraint(equalTo: periodView.bottomAnchor, constant: 16),
+            pieChartView.topAnchor.constraint(equalTo: periodView.bottomAnchor, constant: 8),
+            pieChartView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            pieChartView.widthAnchor.constraint(equalToConstant: 260),
+            pieChartView.heightAnchor.constraint(equalToConstant: 220),
+            
+            tableView.topAnchor.constraint(equalTo: pieChartView.bottomAnchor, constant: 4),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-
+    
     @objc private func didTapBack() {
         onClose?()
     }
@@ -129,6 +144,12 @@ final class AnalyticsViewController: UIViewController {
 
             periodView.updateAmount(to: totalAmount)
             periodView.setSortMode(sortMode)
+            
+            let chartEntities = grouped.map {
+                PieChartEntity(value: $0.amount, label: $0.category.name)
+            }
+            pieChartView.entities = chartEntities
+            
             tableView.reloadData()
         }
     }
