@@ -2,7 +2,7 @@
 //  NetworkClient.swift
 //  FinanceTracker
 //
-//  Created by Nikita Makhov on 18.07.2025.
+//  Created by MakhovN @nktmahov
 //
 
 import Foundation

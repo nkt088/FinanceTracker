@@ -4,17 +4,19 @@
 //
 //  Created by MakhovN @nktmahov
 //
-
 import SwiftUI
 import SwiftData
 
 @main
 struct FinanceTrackerApp: App {
+    @State private var showMain = false
+
     init() {
         if let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
             print("Documents directory: \(documentsURL.path)")
         }
     }
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -30,9 +32,20 @@ struct FinanceTrackerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+            ZStack {
+                if showMain {
+                    RootView()
+                } else {
+                    LaunchAnimationView {
+                        withAnimation {
+                            showMain = true
+                        }
+                    }
+                    .ignoresSafeArea()
+                    .background(Color.white)
+                }
+            }
         }
         .modelContainer(sharedModelContainer)
     }
-    
 }
