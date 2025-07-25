@@ -17,12 +17,6 @@ struct Account : Codable{
     let updatedAt: Date
 }
 
-//struct AccountBrief {
-//    let id: Int
-//    let name: String
-//    let balance: Decimal
-//    let currency: String
-//}
 struct AccountBrief: Decodable {
     let id: Int
     let name: String
@@ -61,12 +55,6 @@ enum AccountChangeType: String {
     case modification = "MODIFICATION"
     case creation = "CREATION"
 }
-
-//struct AccountCreateRequest {
-//    let name: String
-//    let balance: Decimal
-//    let currency: String
-//}
 
 struct AccountUpdateRequest: Encodable {
     let name: String

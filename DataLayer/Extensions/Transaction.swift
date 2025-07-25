@@ -4,7 +4,6 @@
 //
 //  Created by MakhovN @nktmahov
 //
-
 // MARK: - Конвертация Transaction <-> Foundation
 // Transaction+JSON
 import Foundation

@@ -18,7 +18,7 @@ final class AccountManager {
             try AccountFileCache.shared.load()
             let id = AccountFileCache.shared.current()?.id
             if let id = id {
-                defaults.set(id, forKey: "account_id") // сохраняем в UserDefaults
+                defaults.set(id, forKey: "account_id") // в UserDefaults
             }
             return id
         } catch {

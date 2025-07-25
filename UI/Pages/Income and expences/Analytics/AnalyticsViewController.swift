@@ -117,14 +117,6 @@ final class AnalyticsViewController: UIViewController {
 
             let groupedDict = Dictionary(grouping: filtered, by: { $0.categoryId })
 
-//            var result: [(Category, Decimal)] = []
-//            for (categoryId, transactions) in groupedDict {
-//                guard let category = categoryMap[categoryId] else { continue }
-//                let sum = transactions.reduce(0) { $0 + $1.amount }
-//                result.append((category, sum))
-//            }
-//
-//            self.grouped = CategorySorter.sort(grouped: result, mode: sortMode)
             var result: [(Category, [Transaction])] = []
             for (categoryId, transactions) in groupedDict {
                 guard let category = categoryMap[categoryId] else { continue }
@@ -134,7 +126,6 @@ final class AnalyticsViewController: UIViewController {
             self.totalAmount = result
                 .flatMap { $0.1 }
                 .reduce(0) { $0 + $1.amount }
-            //self.totalAmount = result.map(\.1).reduce(0, +)
 
             periodView.updateAmount(to: totalAmount)
             periodView.setSortMode(sortMode)

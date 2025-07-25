@@ -14,26 +14,7 @@ final class AccountFileCache {
     private let fileManager = FileManager.default
     private let fileName = "account"
     private var account: Account?
-
-//    func save(_ account: Account) throws {
-//        let object = account.jsonObject
-//        let data = try JSONSerialization.data(withJSONObject: object, options: .prettyPrinted)
-//        let url = try fileURL()
-//        try data.write(to: url)
-//        self.account = account
-//    }
-//
-//    func load() throws {
-//        let url = try fileURL()
-//        guard fileManager.fileExists(atPath: url.path) else {
-//            self.account = nil
-//            return
-//        }
-//
-//        let data = try Data(contentsOf: url)
-//        let raw = try JSONSerialization.jsonObject(with: data, options: [])
-//        self.account = Account.parse(jsonObject: raw)
-//    }
+    
     func save(_ account: Account) throws {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601

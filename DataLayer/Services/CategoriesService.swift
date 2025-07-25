@@ -16,45 +16,25 @@ final class CategoriesService {
     private init() {
         try? cache.load(from: "categories")
     }
-
-    //для листа
-//    func categories() async throws -> [Category] {
-//        cache.categories
-//    }
-
-    //для пикер
-//    func categories(for direction: Direction) async throws -> [Category] {
-//        cache.categories.filter { $0.direction == direction }
-//    }
-
     func category(by id: Int) -> Category? {
         cache.categories.first(where: { $0.id == id })
     }
-    
     //network
     //для View
     func categories() async throws -> [Category] {
         let response = try await NetworkService.shared.fetchAllCategories()
         return response.map { $0.toCategory }
     }
-    //для Picker view
-//    func categories(for direction : Direction) async throws -> [Category] {
-//        let isIncome = direction == .income
-//        let response = try await NetworkService.shared.fetchCategories(isIncome: isIncome)
-//        return response.map { $0.toCategory }
-//    }
+    //для Picker view и List
     func categories(for direction: Direction) async throws -> [Category] {
         let isIncome = direction == .income
-
         // Проверка наличия локального файла
         let fileExists = (try? cache.fileURL(for: "categories"))
             .map { FileManager.default.fileExists(atPath: $0.path) } ?? false
-
         // Если офлайн и файл существует — загружаем из файла
         if !NetworkMonitor.shared.isConnected, fileExists {
             return cache.categories.filter { $0.direction == direction }
         }
-
         do {
             // Пробуем получить с сервера
             let response = try await NetworkService.shared.fetchCategories(isIncome: isIncome)

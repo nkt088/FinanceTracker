@@ -120,18 +120,6 @@ struct TransactionUpdateView: View {
             }
         case .edit(let transaction):
             _ = try? await transactionsService.update(transaction.id, with: request)
-            //        case .edit(let transaction):
-            //            let updated = Transaction(
-            //                id: transaction.id,
-            //                accountId: account.id,
-            //                categoryId: category.id,
-            //                amount: amount,
-            //                transactionDate: date,
-            //                comment: comment,
-            //                createdAt: transaction.createdAt,
-            //                updatedAt: Date()
-            //            )
-            //            _ = try? await transactionsService.update(updated)
         }
     }
 }
