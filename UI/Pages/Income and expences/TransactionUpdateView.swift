@@ -98,14 +98,6 @@ struct TransactionUpdateView: View {
                 }
             }
         }
-//        .task {
-//            if case let .edit(transaction) = mode {
-//                selectedCategory = CategoriesService.shared.category(by: transaction.categoryId)
-//                amount = transaction.amount
-//                date = transaction.transactionDate
-//                comment = transaction.comment ?? ""
-//            }
-//        }
     }
 
     private func save() async {

@@ -12,64 +12,84 @@ import Foundation
 final class TransactionsService {
     static let shared = TransactionsService()
     private let cache = TransactionsFileCache()
-    //для net протестить без него
-    private init() {}
-    //для json
-//    private init() {
-//        try? cache.load(from: "transactions")
-//    }
+    private let fileName = "transactions"
 
-//    func transactions(from startDate: Date, to endDate: Date, accountId: Int) async throws -> [Transaction] {
-//        cache.transactions.filter {
-//            $0.accountId == accountId &&
-//            $0.transactionDate >= startDate &&
-//            $0.transactionDate <= endDate
-//        }
-//    }
-//для json
-//    func create(_ request: TransactionRequest) async throws -> Transaction {
-//        let new = Transaction(
-//            id: (cache.transactions.map { $0.id }.max() ?? 0) + 1,
-//            accountId: request.accountId,
-//            categoryId: request.categoryId,
-//            amount: request.amount,
-//            transactionDate: request.transactionDate,
-//            comment: request.comment,
-//            createdAt: Date(),
-//            updatedAt: Date()
-//        )
-//        cache.add(new)
-//        try? cache.save(to: "transactions")
-//        return new
-//    }
+    private init() {
+        try? cache.load(from: fileName)
+    }
 
-//    func update(_ updated: Transaction) async throws -> Transaction {
-//        try await delete(id: updated.id)
-//        cache.add(updated)
-//        try? cache.save(to: "transactions")
-//        return updated
-//    }
+    func transactions(from start: Date, to end: Date) async throws -> [Transaction] {
+        guard let accountId = AccountManager.shared.cachedAccountId else {
+            throw NSError(domain: "AccountError", code: 1, userInfo: [NSLocalizedDescriptionKey: "accountId не найден в UserDefaults"])
+        }
+        if NetworkMonitor.shared.isConnected {
+            let responses = try await NetworkService.shared.fetchTransactions(accountId: accountId, startDate: start, endDate: end)
+            let transactions = responses.map { $0.toTransaction() }
 
-//    func delete(id: Int) async throws {
-//        cache.remove(by: id)
-//        try? cache.save(to: "transactions")
-//    }
-    
-    
-    //network create
+            // обновим локальный файл
+            transactions.forEach { cache.add($0) }
+            try? cache.save(to: fileName)
+            return transactions
+        } else {
+            return cache.transactions.filter {
+                $0.accountId == accountId && $0.transactionDate >= start && $0.transactionDate <= end
+            }
+        }
+    }
+
     func create(_ request: TransactionRequest) async throws -> Transaction {
-        try await NetworkService.shared.createTransaction(request)
+        let transaction: Transaction
+
+        if NetworkMonitor.shared.isConnected {
+            transaction = try await NetworkService.shared.createTransaction(request)
+        } else {
+            let newId = (cache.transactions.map { $0.id }.max() ?? 0) + 1
+            transaction = Transaction(
+                id: newId,
+                accountId: request.accountId,
+                categoryId: request.categoryId,
+                amount: request.amount,
+                transactionDate: request.transactionDate,
+                comment: request.comment,
+                createdAt: request.transactionDate,
+                updatedAt: Date()
+            )
+        }
+
+        cache.add(transaction)
+        try? cache.save(to: fileName)
+        return transaction
     }
-    //вывод на ListView
-    func transactions(from start: Date, to end: Date, accountId: Int = AccountManager.shared.accountId!) async throws -> [Transaction] {
-        let responses = try await NetworkService.shared.fetchTransactions(accountId: accountId, startDate: start, endDate: end)
-        return responses.map { $0.toTransaction() }
-    }
+
     func update(_ id: Int, with request: TransactionRequest) async throws -> Transaction {
-        try await NetworkService.shared.updateTransaction(id: id, request)
+        let updated = Transaction(
+            id: id,
+            accountId: request.accountId,
+            categoryId: request.categoryId,
+            amount: request.amount,
+            transactionDate: request.transactionDate,
+            comment: request.comment,
+            createdAt: request.transactionDate,
+            updatedAt: Date()
+        )
+
+        if NetworkMonitor.shared.isConnected {
+            _ = try await NetworkService.shared.updateTransaction(id: id, request)
+        }
+
+        try await delete(id: id)
+        cache.add(updated)
+        try? cache.save(to: fileName)
+
+        return updated
     }
+
     func delete(id: Int) async throws {
-        try await NetworkService.shared.deleteTransaction(id: id)
+        if NetworkMonitor.shared.isConnected {
+            try await NetworkService.shared.deleteTransaction(id: id)
+        }
+
+        cache.remove(by: id)
+        try? cache.save(to: fileName)
     }
-    
 }
