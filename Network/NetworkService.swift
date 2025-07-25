@@ -106,15 +106,6 @@ final class NetworkService {
     func deleteTransaction(id: Int) async throws {
         _ = try await request(path: "transactions/\(id)", method: "DELETE") as EmptyResponse
     }
-//    func createTransaction(_ requestModel: TransactionRequest) async throws {
-//        let encoder = JSONEncoder()
-//        encoder.dateEncodingStrategy = .iso8601
-//        guard let data = try? encoder.encode(requestModel) else {
-//            throw NetworkError.encodingError
-//        }
-//        _ = try await request(path: "transactions", method: "POST", body: data) as EmptyResponse
-//    }
-    
     
     func createTransaction(_ requestModel: TransactionRequest) async throws -> Transaction {
         let encoder = JSONEncoder()

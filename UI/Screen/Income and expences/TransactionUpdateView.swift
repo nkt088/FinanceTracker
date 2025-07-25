@@ -22,6 +22,7 @@ struct TransactionUpdateView: View {
     @State private var amount: Decimal = 0
     @State private var date: Date = Date()
     @State private var comment: String = ""
+    
     private var isCreate: Bool {
         if case .create = mode { return true }
         return false
@@ -29,7 +30,7 @@ struct TransactionUpdateView: View {
 
     private let categoriesService = CategoriesService.shared
     private let transactionsService = TransactionsService.shared
-    private let account = AccountBrief(id: 104, name: "Основной счёт", balance: 0, currency: "RUB")
+    private let account = AccountBrief(id: AccountManager.shared.accountId!, name: "Основной счёт", balance: 0, currency: "RUB")
     
     var body: some View {
         Form {
@@ -97,14 +98,6 @@ struct TransactionUpdateView: View {
                 }
             }
         }
-//        .task {
-//            if case let .edit(transaction) = mode {
-//                selectedCategory = CategoriesService.shared.category(by: transaction.categoryId)
-//                amount = transaction.amount
-//                date = transaction.transactionDate
-//                comment = transaction.comment ?? ""
-//            }
-//        }
     }
 
     private func save() async {
@@ -113,7 +106,7 @@ struct TransactionUpdateView: View {
         let account = BankAccountsService.shared.brief()
         
         let request = TransactionRequest(
-            accountId: 104,
+            accountId: AccountManager.shared.accountId!,
             categoryId: category.id,
             amount: amount,
             transactionDate: date,
@@ -127,18 +120,6 @@ struct TransactionUpdateView: View {
             }
         case .edit(let transaction):
             _ = try? await transactionsService.update(transaction.id, with: request)
-            //        case .edit(let transaction):
-            //            let updated = Transaction(
-            //                id: transaction.id,
-            //                accountId: account.id,
-            //                categoryId: category.id,
-            //                amount: amount,
-            //                transactionDate: date,
-            //                comment: comment,
-            //                createdAt: transaction.createdAt,
-            //                updatedAt: Date()
-            //            )
-            //            _ = try? await transactionsService.update(updated)
         }
     }
 }

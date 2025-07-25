@@ -28,11 +28,8 @@ final class BankAccountsService {
         updatedAt: Date()
     )
 
-//    func account() async throws -> Account {
-//        return account
-//    }
     func account() async throws -> Account {
-        // Если в памяти нет актуальных данных — пробуем подгрузить
+        // Если в памяти нет актуальных данных пробуем подгрузить
         if cache.current() == nil {
             try? cache.load()
             if let loaded = cache.current() {

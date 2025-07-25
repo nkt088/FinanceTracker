@@ -18,8 +18,6 @@ struct WalletView: View {
     @FocusState private var isBalanceFocused: Bool
 
     private let accountService = BankAccountsService.shared
-    //private let accountService = NetworkService.shared
-
 
     private let rates: [String: Decimal] = [
         "RUB": 1,
@@ -95,13 +93,6 @@ struct WalletView: View {
                     }
                 }
             }
-            //            .task {
-            //                if NetworkMonitor.shared.isConnected {
-            //                    await load()
-            //                    await saveNetwork()
-            //                }
-            //                else { await load() }
-            //            }
             .task {
                   if NetworkMonitor.shared.isConnected {
                       await load()

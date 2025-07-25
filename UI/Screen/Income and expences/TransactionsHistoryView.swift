@@ -164,8 +164,7 @@ struct TransactionsHistoryView: View {
         let endOfEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: endDate)!
 
         do {
-            let all = try await service.transactions(from: startOfStart, to: endOfEnd, accountId: 104)
-            //let all = try await service.transactions(from: startOfStart, to: endOfEnd, accountId: 1)
+            let all = try await service.transactions(from: startOfStart, to: endOfEnd)
             let allCategories = try await categoriesService.categories(for: direction)
             let categoryIds = Set(allCategories.map(\.id))
             categoriesMap = Dictionary(uniqueKeysWithValues: allCategories.map { ($0.id, $0) })

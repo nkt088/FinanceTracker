@@ -49,6 +49,11 @@
 			path = DomainModels;
 			sourceTree = "<group>";
 		};
+		4AB74B4E2E331A4C00A560D4 /* Network */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Network;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +70,7 @@
 		4AEBFDEA2DFC15BD0047BE02 = {
 			isa = PBXGroup;
 			children = (
+				4AB74B4E2E331A4C00A560D4 /* Network */,
 				4A711E8A2E0570A0002C49C7 /* DataLayer */,
 				4A85453B2E0F66A0005BD576 /* DomainModels */,
 				4A8545362E0F6678005BD576 /* PlatformLayer */,
@@ -95,6 +101,7 @@
 				4A711EA42E0570A5002C49C7 /* UI */,
 				4A8545362E0F6678005BD576 /* PlatformLayer */,
 				4A85453B2E0F66A0005BD576 /* DomainModels */,
+				4AB74B4E2E331A4C00A560D4 /* Network */,
 			);
 			name = FinanceTracker;
 			packageProductDependencies = (

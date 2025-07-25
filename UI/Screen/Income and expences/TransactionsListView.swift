@@ -43,6 +43,9 @@ struct TransactionsListView: View {
             transactions = TransactionSorter.sort(transactions, by: sortMode)
         }
         .task {
+            
+            await ensureLocalDataExists() // первичная загрузка
+
             await loadData()
         }
     }
@@ -125,37 +128,65 @@ struct TransactionsListView: View {
 
     private func loadData() async {
         isLoading = true
+        defer { isLoading = false }
+
         let calendar = Calendar.current
         let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: Date())!
         let start = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
-//        var calendar = Calendar.current
-//        calendar.timeZone = TimeZone.current
-//        
-//        let today = calendar.startOfDay(for: Date())
-//        let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: today)!
+
+        guard let accountId = AccountManager.shared.accountId ?? AccountManager.shared.cachedAccountId else {
+            print("accountId недоступен")
+            transactions = []
+            return
+        }
+
         do {
-            //для json
-            //let all = try await service.transactions(from: today, to: end, accountId: 1)
-            //для network
-            let all = try await service.transactions(from: start, to: end, accountId: 104)
-            // получить нужные категории по direction
+            let all = try await service.transactions(from: start, to: end)
             let allCategories = try await categoriesService.categories(for: direction)
             let categoryIds = Set(allCategories.map(\.id))
             categoriesMap = Dictionary(uniqueKeysWithValues: allCategories.map { ($0.id, $0) })
 
-            // фильтрация по categoryId
             let filtered = all.filter { categoryIds.contains($0.categoryId) }
             transactions = TransactionSorter.sort(filtered, by: sortMode)
         } catch {
+            print("Ошибка загрузки транзакций: \(error)")
             transactions = []
         }
-
-        isLoading = false
     }
 
     private func reload() {
         Task {
             await loadData()
+        }
+    }
+    private func ensureLocalDataExists() async {
+        guard NetworkMonitor.shared.isConnected else { return }
+
+        let fileURL: URL
+        do {
+            fileURL = try FileManager.default
+                .urls(for: .documentDirectory, in: .userDomainMask)
+                .first!
+                .appendingPathComponent("transactions.json")
+        } catch {
+            return
+        }
+
+        if !FileManager.default.fileExists(atPath: fileURL.path) {
+            let calendar = Calendar.current
+            let start = calendar.date(byAdding: .year, value: -1, to: Date())!
+            let end = calendar.date(byAdding: .day, value: 1, to: Date())!
+            guard let accountId = AccountManager.shared.accountId ?? AccountManager.shared.cachedAccountId else { return }
+            do {
+                let transactions = try await NetworkService.shared.fetchTransactions(accountId: accountId, startDate: start, endDate: end)
+                let txModels = transactions.map { $0.toTransaction() }
+
+                let fileCache = TransactionsFileCache()
+                txModels.forEach { fileCache.add($0) }
+                try? fileCache.save(to: "transactions")
+            } catch {
+                // игнорируем, если не удалось
+            }
         }
     }
 }
