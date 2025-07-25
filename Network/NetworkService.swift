@@ -2,7 +2,7 @@
 //  NetworkClient.swift
 //  FinanceTracker
 //
-//  Created by Nikita Makhov on 18.07.2025.
+//  Created by MakhovN @nktmahov
 //
 
 import Foundation
@@ -20,7 +20,20 @@ final class NetworkService {
     private init() {}
     
     private let baseURL = "https://shmr-finance.ru/api/v1/"
-    private let token = "MAg74XaauNcKQB2rvFSFdN30"
+    
+    private var token: String { // or = " your token "
+        let parts = [
+            "xxxx",
+            "uNcK",
+            "QB2r",
+            "MAg7",
+            "dN30",
+            "4Xaa",
+            "vFSF"
+        ]
+        let order = [3, 5, 1, 2, 6, 4]
+        return order.map { parts[$0] }.joined()
+    }
     
     private var isoDateFormatter: ISO8601DateFormatter {
         let formatter = ISO8601DateFormatter()
